@@ -1,5 +1,5 @@
 package model;
 
-public class DTextModel {
+public class DTextModel extends DShapeModel {
 
 }
