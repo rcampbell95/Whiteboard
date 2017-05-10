@@ -22,12 +22,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+
 import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -106,9 +108,9 @@ public class Canvas extends JPanel
 		label.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton rect = new JButton("rect");
 		rect.setBorder(new EmptyBorder(10, 10, 10, 10));
+
 		rect.addActionListener(new ActionListener()
 		{
-
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
@@ -117,12 +119,40 @@ public class Canvas extends JPanel
 			}
 
 		});
+
 		JButton oval = new JButton("oval");
-//		oval.setBorder(new EmptyBorder(10, 10, 10, 10));
+		oval.setBorder(new EmptyBorder(10, 10, 10, 10));
+		oval.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				DShapeModel model = new DOvalModel();
+				addShape(model);
+			}
+		});
+
 		JButton line = new JButton("line");
 //		line.setBorder(new EmptyBorder(10, 10, 10, 10));
+		line.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("line");
+			}
+		});
+		line.setBorder(new EmptyBorder(10, 10, 10, 10));
+
 		JButton text = new JButton("text");
 //		text.setBorder(new EmptyBorder(10, 10, 10, 10));
+		text.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("text");
+			}
+		});
+		//text.setBorder(new EmptyBorder(10, 10, 10, 10));
 		buttonPane1.add(label);
 		buttonPane1.add(rect);
 		buttonPane1.add(oval);
@@ -165,15 +195,16 @@ public class Canvas extends JPanel
 	private void addButtonPane3(JPanel pan)
 	{
 		JPanel buttonPane3 = new JPanel();
-		buttonPane3.setLayout(new FlowLayout());//(buttonPane3, BoxLayout.X_AXIS));
+		buttonPane3.setLayout(new BoxLayout(buttonPane3, BoxLayout.X_AXIS));
 		JTextField text2 = new JTextField("Whiteboard!");
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
 		String[] fonts = ge.getAvailableFontFamilyNames();
 		JComboBox<String> comboBox = new JComboBox<>(fonts);
-		comboBox.setBorder(new EmptyBorder(10, 10, 10, 10));
-//		comboBox.setBackground(Color.WHITE);
+		//comboBox.setBorder(new EmptyBorder(10, 10, 10, 10));
+		comboBox.setBackground(Color.WHITE);
 		text2.setFont(comboBox.getFont());
-//		text2.setBorder(new EmptyBorder(10, 10, 10, 10));
+		//text2.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		buttonPane3.add(text2);
 		buttonPane3.add(comboBox);
@@ -215,6 +246,7 @@ public class Canvas extends JPanel
 		JTable tablePane = new JTable(model);
 
 		tablePane.setLayout(new BoxLayout(tablePane, BoxLayout.X_AXIS));
+
 		JTableHeader head = tablePane.getTableHeader();
 		head.setBackground(Color.GRAY);
 		tablePane.setBackground(Color.WHITE);
@@ -240,8 +272,6 @@ public class Canvas extends JPanel
 		{
 			shapes.add(new DText(model));
 		}
-		//System.out.println(shapes.size());
 		east.repaint();
-
 	}
 }
