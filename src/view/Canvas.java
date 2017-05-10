@@ -1,9 +1,12 @@
 package view;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -12,18 +15,20 @@ import javax.swing.JComponent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GraphicsEnvironment;
 
 import javax.swing.JLabel;
 public class Canvas extends JPanel{
 
+	DefaultTableModel model = new DefaultTableModel();
 
 	public Canvas(){
 
 
 		this.setLayout(new BorderLayout());
-		this.setSize(400, 400);
+		this.setSize(400, 400);		
 		this.setBackground(Color.WHITE);
 		JPanel west = new JPanel();
 		west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
@@ -33,6 +38,16 @@ public class Canvas extends JPanel{
 		addButtonPane4(west);
 		addTablePane(west);
 		west.setBackground(Color.WHITE);
+		
+		JPanel east = new JPanel();
+		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
+		JButton b = new JButton("b");
+		b.setVisible(false);
+		east.add(b);
+		
+		east.setBackground(Color.BLACK);
+		
+		this.add(east, BorderLayout.CENTER);
 		this.add(west, BorderLayout.WEST);
 
 		for(Component comp : west.getComponents())
@@ -47,7 +62,7 @@ public class Canvas extends JPanel{
 		buttonPane1.setLayout(new BoxLayout(buttonPane1, BoxLayout.X_AXIS));		
 		JLabel label = new JLabel("Add: ");
 		label.setBorder(new EmptyBorder(10, 10, 10, 10));
-		JButton rect = new JButton("rect");
+		JButton rect = new JButton("rect");		
 		rect.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton oval = new JButton("oval");
 		oval.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -114,11 +129,19 @@ public class Canvas extends JPanel{
 
 	private void addTablePane(JPanel pan)
 	{
-		JTable tablePane = new JTable();
+		
+		String [] str = { "X", "Y", "Width", "Height"};
+		int rows = 10;
+		DefaultTableModel model = new DefaultTableModel(rows, str.length);
+		model.setColumnIdentifiers(str);
+		JTable tablePane = new JTable(model);
+		
 		tablePane.setLayout(new BoxLayout(tablePane, BoxLayout.X_AXIS));	
-		tablePane.setBorder(new EmptyBorder(10, 10, 10, 10));
+		JTableHeader head = tablePane.getTableHeader();
+		head.setBackground(Color.GRAY);
 		tablePane.setBackground(Color.WHITE);
-		pan.add(tablePane);
+		tablePane.setVisible(true);
+		pan.add(new JScrollPane(tablePane));
 	}
 }
 
