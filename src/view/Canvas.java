@@ -17,15 +17,20 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JLabel;
 public class Canvas extends JPanel{
 
 	DefaultTableModel model = new DefaultTableModel();
+	List<DShape> shapes;
 
 	public Canvas(){
-
+		shapes = new ArrayList<DShape>();
 
 		this.setLayout(new BorderLayout());
 		this.setSize(400, 400);		
@@ -142,6 +147,14 @@ public class Canvas extends JPanel{
 		tablePane.setBackground(Color.WHITE);
 		tablePane.setVisible(true);
 		pan.add(new JScrollPane(tablePane));
+	}
+	
+	
+	protected void paintComponent(Graphics g) {
+		for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
+			DShape shape = i.next();
+			shape.draw(g);
+		}
 	}
 }
 
