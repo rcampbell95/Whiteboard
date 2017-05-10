@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 public abstract class DShapeModel {
 	protected int x1 = 0;
@@ -8,6 +9,8 @@ public abstract class DShapeModel {
 	protected int width = 0;
 	protected int height = 0;
 	protected Color shapeColor = Color.GRAY;
+	
+	ArrayList<ModelListener> listeners;
 	
 	public void setCoordinate(int x, int y) {
 		this.x1 = x;
