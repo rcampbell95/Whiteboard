@@ -15,8 +15,10 @@ public class DRect extends DShape {
 
 	@Override
 	public void draw(Graphics g) {
-		Rectangle shape = new Rectangle(model.getX(), model.getY(), model.getWidth(), model.getHeight());
-		((Graphics2D)g).draw(shape);
+		//Rectangle shape = new Rectangle(model.getX(), model.getY(), model.getWidth(), model.getHeight());
+		g.setColor(model.getColor());
+		g.fillRect(model.getX(), model.getY(), model.getWidth(), model.getHeight());
+		//((Graphics2D)g).draw(shape);
 	}
 
 }

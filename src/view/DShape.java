@@ -11,6 +11,10 @@ public abstract class DShape {
 		this.model = model;
 	}
 	
+	public void getKnobs() {
+		;
+	}
+	
 	public abstract void draw(Graphics g);
 	
 }

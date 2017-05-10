@@ -7,6 +7,13 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import model.DLineModel;
+import model.DOvalModel;
+import model.DRectModel;
+import model.DShapeModel;
+import model.DTextModel;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,25 +22,50 @@ import javax.swing.JComponent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import java.util.Iterator;
+import java.util.List;
+
+
 import javax.swing.JLabel;
 public class Canvas extends JPanel{
+
 
 	DefaultTableModel model;
 	DShape selected;
 	ArrayList<DShape> shapes = new ArrayList<>();
 	
-	public Canvas(){
 
+	
+	JPanel east;
+
+
+	public Canvas(){
+		shapes = new ArrayList<DShape>();
 
 		this.setLayout(new BorderLayout());
 		this.setSize(400, 400);		
 		this.setBackground(Color.WHITE);
 		JPanel west = new JPanel();
+		east = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
+						DShape shape = i.next();
+						shape.draw(g);
+				}
+			}
+		};
+		
 		west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
 		addButtonPane1(west);
 		addButtonPane2(west);
@@ -42,13 +74,12 @@ public class Canvas extends JPanel{
 		addTablePane(west);
 		west.setBackground(Color.WHITE);
 		
-		JPanel east = new JPanel();
 		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
 		JButton b = new JButton("b");
 		b.setVisible(false);
 		east.add(b);
 		
-		east.setBackground(Color.BLACK);
+		east.setBackground(Color.WHITE);
 		
 		this.add(east, BorderLayout.CENTER);
 		this.add(west, BorderLayout.WEST);
@@ -64,16 +95,18 @@ public class Canvas extends JPanel{
 		JPanel buttonPane1 = new JPanel();
 		buttonPane1.setLayout(new BoxLayout(buttonPane1, BoxLayout.X_AXIS));		
 		JLabel label = new JLabel("Add: ");
-		//label.setBorder(new EmptyBorder(10, 10, 10, 10));
+		label.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton rect = new JButton("rect");
-		rect.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e)
-			{
-				System.out.println("rectangle");
-				
+		rect.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DShapeModel model = new DRectModel();
+				addShape(model);
 			}
+			
 		});
-		//rect.setBorder(new EmptyBorder(10, 10, 10, 10));
+		rect.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton oval = new JButton("oval");
 		oval.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e)
@@ -177,5 +210,32 @@ public class Canvas extends JPanel{
 		tablePane.setVisible(true);
 		pan.add(new JScrollPane(tablePane));
 	}
-}
+	
+	private void addShape(DShapeModel model) {
+		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
 
+		if(model instanceof DRectModel) {
+			shapes.add(new DRect(model));
+		}
+		else if(model instanceof DOvalModel) {
+			shapes.add(new DOval(model));
+		}
+		else if(model instanceof DLineModel) {
+			shapes.add(new DLine(model));
+		}
+		else if(model instanceof DTextModel) {
+			shapes.add(new DText(model));
+		}
+		//System.out.println(shapes.size());
+		east.repaint();
+		
+	}
+	
+	//protected void paintComponent(Graphics g) {
+	//	super.paintComponent(g);
+	//	for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
+	//		DShape shape = i.next();
+	//		shape.draw(g);
+	//	}
+	//}
+}
