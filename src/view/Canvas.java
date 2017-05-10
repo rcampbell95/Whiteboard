@@ -89,7 +89,6 @@ public class Canvas extends JPanel{
 		label.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton rect = new JButton("rect");
 		rect.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DShapeModel model = new DRectModel();
@@ -98,7 +97,16 @@ public class Canvas extends JPanel{
 			
 		});
 		rect.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
 		JButton oval = new JButton("oval");
+		oval.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					DShapeModel model = new DOvalModel();
+					addShape(model);
+				}
+		});
+		
 		oval.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton line = new JButton("line");
 		line.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -179,8 +187,6 @@ public class Canvas extends JPanel{
 	}
 	
 	private void addShape(DShapeModel model) {
-		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
-
 		if(model instanceof DRectModel) {
 			shapes.add(new DRect(model));
 		}
@@ -193,16 +199,7 @@ public class Canvas extends JPanel{
 		else if(model instanceof DTextModel) {
 			shapes.add(new DText(model));
 		}
-		//System.out.println(shapes.size());
 		east.repaint();
 		
 	}
-	
-	//protected void paintComponent(Graphics g) {
-	//	super.paintComponent(g);
-	//	for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
-	//		DShape shape = i.next();
-	//		shape.draw(g);
-	//	}
-	//}
 }

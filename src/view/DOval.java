@@ -15,8 +15,8 @@ public class DOval extends DShape {
 
 	@Override
 	public void draw(Graphics g) {
-		Ellipse2D.Double oval = new Ellipse2D.Double(model.getX(), model.getY(), model.getWidth(), model.getHeight());
-		((Graphics2D)g).draw(oval);
+		g.setColor(model.getColor());
+		g.fillOval(model.getX(), model.getY(), model.getWidth(), model.getHeight());
 		
 	}
 
