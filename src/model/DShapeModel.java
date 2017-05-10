@@ -17,9 +17,10 @@ public abstract class DShapeModel {
 		Random randGen = new Random();
 		int UPPER_BOUND = 75;
 		int LOWER_BOUND = 25;
+		int CANVAS_SIZE = 400;
 		
-		x1 = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
-		y1 = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+		x1 = randGen.nextInt(CANVAS_SIZE);
+		y1 = randGen.nextInt(CANVAS_SIZE);
 		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		

@@ -37,6 +37,7 @@ public class Canvas extends JPanel{
 
 	DefaultTableModel model = new DefaultTableModel();
 	ArrayList<DShape> shapes;
+	JPanel east;
 
 	public Canvas(){
 		shapes = new ArrayList<DShape>();
@@ -45,6 +46,17 @@ public class Canvas extends JPanel{
 		this.setSize(400, 400);		
 		this.setBackground(Color.WHITE);
 		JPanel west = new JPanel();
+		east = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
+						DShape shape = i.next();
+						shape.draw(g);
+				}
+			}
+		};
+		
 		west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
 		addButtonPane1(west);
 		addButtonPane2(west);
@@ -53,7 +65,6 @@ public class Canvas extends JPanel{
 		addTablePane(west);
 		west.setBackground(Color.WHITE);
 		
-		JPanel east = new JPanel();
 		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
 		JButton b = new JButton("b");
 		b.setVisible(false);
@@ -168,7 +179,6 @@ public class Canvas extends JPanel{
 	}
 	
 	private void addShape(DShapeModel model) {
-		model.setColor(Color.BLACK);
 		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
 
 		if(model instanceof DRectModel) {
@@ -184,15 +194,15 @@ public class Canvas extends JPanel{
 			shapes.add(new DText(model));
 		}
 		//System.out.println(shapes.size());
-		repaint();
+		east.repaint();
 		
 	}
 	
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
-			DShape shape = i.next();
-			shape.draw(g);
-		}
-	}
+	//protected void paintComponent(Graphics g) {
+	//	super.paintComponent(g);
+	//	for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
+	//		DShape shape = i.next();
+	//		shape.draw(g);
+	//	}
+	//}
 }
