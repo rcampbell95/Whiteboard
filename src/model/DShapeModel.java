@@ -2,6 +2,7 @@ package model;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class DShapeModel {
 	protected int x1 = 0;
@@ -11,6 +12,18 @@ public abstract class DShapeModel {
 	protected Color shapeColor = Color.GRAY;
 	
 	ArrayList<ModelListener> listeners;
+	
+	public DShapeModel() {
+		Random randGen = new Random();
+		int UPPER_BOUND = 75;
+		int LOWER_BOUND = 25;
+		
+		x1 = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+		y1 = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+		
+	}
 	
 	public void setCoordinate(int x, int y) {
 		this.x1 = x;

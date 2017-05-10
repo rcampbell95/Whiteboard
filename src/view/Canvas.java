@@ -7,6 +7,13 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import model.DLineModel;
+import model.DOvalModel;
+import model.DRectModel;
+import model.DShapeModel;
+import model.DTextModel;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,6 +26,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +36,7 @@ import javax.swing.JLabel;
 public class Canvas extends JPanel{
 
 	DefaultTableModel model = new DefaultTableModel();
-	List<DShape> shapes;
+	ArrayList<DShape> shapes;
 
 	public Canvas(){
 		shapes = new ArrayList<DShape>();
@@ -50,7 +59,7 @@ public class Canvas extends JPanel{
 		b.setVisible(false);
 		east.add(b);
 		
-		east.setBackground(Color.BLACK);
+		east.setBackground(Color.WHITE);
 		
 		this.add(east, BorderLayout.CENTER);
 		this.add(west, BorderLayout.WEST);
@@ -67,7 +76,16 @@ public class Canvas extends JPanel{
 		buttonPane1.setLayout(new BoxLayout(buttonPane1, BoxLayout.X_AXIS));		
 		JLabel label = new JLabel("Add: ");
 		label.setBorder(new EmptyBorder(10, 10, 10, 10));
-		JButton rect = new JButton("rect");		
+		JButton rect = new JButton("rect");
+		rect.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DShapeModel model = new DRectModel();
+				addShape(model);
+			}
+			
+		});
 		rect.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton oval = new JButton("oval");
 		oval.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -149,12 +167,32 @@ public class Canvas extends JPanel{
 		pan.add(new JScrollPane(tablePane));
 	}
 	
+	private void addShape(DShapeModel model) {
+		model.setColor(Color.BLACK);
+		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
+
+		if(model instanceof DRectModel) {
+			shapes.add(new DRect(model));
+		}
+		else if(model instanceof DOvalModel) {
+			shapes.add(new DOval(model));
+		}
+		else if(model instanceof DLineModel) {
+			shapes.add(new DLine(model));
+		}
+		else if(model instanceof DTextModel) {
+			shapes.add(new DText(model));
+		}
+		//System.out.println(shapes.size());
+		repaint();
+		
+	}
 	
 	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
 			DShape shape = i.next();
 			shape.draw(g);
 		}
 	}
 }
-
