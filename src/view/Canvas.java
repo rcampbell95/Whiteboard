@@ -11,6 +11,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +41,17 @@ public class Canvas extends JPanel{
 		west.setBackground(Color.WHITE);
 		
 		JPanel east = new JPanel();
+		east.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mousePressed(MouseEvent e)
+			{
+				int x = e.getX();
+				int y = e.getY();
+				System.out.println(x + "    " + y);
+			}
+		});
+
 		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
 		JButton b = new JButton("b");
 		b.setVisible(false);
@@ -90,10 +103,12 @@ public class Canvas extends JPanel{
 			public void actionPerformed(ActionEvent e)
 			{
 				if(e.getSource() == setColor) {
-					// do action necessary code
-					Color initialColor = Color.CYAN;
-					Color color = JColorChooser.showDialog(buttonPane2,"Select a color", initialColor);
-					System.out.println(color);
+					if (selected != null)
+					{
+						Color initialColor = Color.CYAN;
+						Color color = JColorChooser.showDialog(buttonPane2, "Select a color", initialColor);
+						System.out.println(color);
+					}
 				}
 			}
 		});
@@ -113,9 +128,9 @@ public class Canvas extends JPanel{
 		String[] fonts= ge.getAvailableFontFamilyNames();
 		JComboBox <String> comboBox = new JComboBox<>(fonts);	
 		comboBox.setBorder(new EmptyBorder(10, 10, 10, 10));
-		comboBox.setBackground(Color.WHITE);
+//		comboBox.setBackground(Color.WHITE);
 		text2.setFont(comboBox.getFont());
-		text2.setBorder(new EmptyBorder(10, 10, 10, 10));
+//		text2.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
 		buttonPane3.add(text2);
 		buttonPane3.add(comboBox);
