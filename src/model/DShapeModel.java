@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public abstract class DShapeModel {
+	ArrayList<ModelListener> list = new ArrayList<>();
 	protected int x1 = 0;
 	protected int y1 = 0;
 	protected int width = 0;

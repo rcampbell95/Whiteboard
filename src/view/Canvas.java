@@ -1,17 +1,9 @@
 package view;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,12 +14,14 @@ import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.JLabel;
 public class Canvas extends JPanel{
 
-	DefaultTableModel model = new DefaultTableModel();
 	List<DShape> shapes;
+	DefaultTableModel model;
+	DShape selected;
 
 	public Canvas(){
 		shapes = new ArrayList<DShape>();
@@ -66,15 +60,15 @@ public class Canvas extends JPanel{
 		JPanel buttonPane1 = new JPanel();
 		buttonPane1.setLayout(new BoxLayout(buttonPane1, BoxLayout.X_AXIS));		
 		JLabel label = new JLabel("Add: ");
-		label.setBorder(new EmptyBorder(10, 10, 10, 10));
+//		label.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton rect = new JButton("rect");		
-		rect.setBorder(new EmptyBorder(10, 10, 10, 10));
+//		rect.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton oval = new JButton("oval");
-		oval.setBorder(new EmptyBorder(10, 10, 10, 10));
+//		oval.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton line = new JButton("line");
-		line.setBorder(new EmptyBorder(10, 10, 10, 10));
+//		line.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton text = new JButton("text");	
-		text.setBorder(new EmptyBorder(10, 10, 10, 10));
+//		text.setBorder(new EmptyBorder(10, 10, 10, 10));
 		buttonPane1.add(label);
 		buttonPane1.add(rect);
 		buttonPane1.add(oval);
@@ -90,7 +84,20 @@ public class Canvas extends JPanel{
 	{
 		JPanel buttonPane2 = new JPanel();
 		buttonPane2.setLayout(new BoxLayout(buttonPane2, BoxLayout.X_AXIS));		
-		JButton setColor = new JButton("Set Color");		
+		JButton setColor = new JButton("Set Color");
+		setColor.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(e.getSource() == setColor) {
+					// do action necessary code
+					Color initialColor = Color.CYAN;
+					Color color = JColorChooser.showDialog(buttonPane2,"Select a color", initialColor);
+					System.out.println(color);
+				}
+			}
+		});
+
 		buttonPane2.add(setColor);
 		buttonPane2.setBorder(new EmptyBorder(10, 10, 10, 10));
 		buttonPane2.setBackground(Color.WHITE);
@@ -136,8 +143,13 @@ public class Canvas extends JPanel{
 	{
 		
 		String [] str = { "X", "Y", "Width", "Height"};
-		int rows = 10;
-		DefaultTableModel model = new DefaultTableModel(rows, str.length);
+		model = new DefaultTableModel(0, str.length) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				//all cells false
+				return false;
+			}
+		};
 		model.setColumnIdentifiers(str);
 		JTable tablePane = new JTable(model);
 		
@@ -148,7 +160,7 @@ public class Canvas extends JPanel{
 		tablePane.setVisible(true);
 		pan.add(new JScrollPane(tablePane));
 	}
-	
+
 	
 	protected void paintComponent(Graphics g) {
 		for(Iterator<DShape> i = shapes.iterator();i.hasNext();) {
@@ -156,5 +168,6 @@ public class Canvas extends JPanel{
 			shape.draw(g);
 		}
 	}
+	
 }
 
