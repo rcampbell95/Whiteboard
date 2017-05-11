@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -55,5 +56,10 @@ public abstract class DShapeModel {
 	
 	public Color getColor() {
 		return this.shapeColor;
+	}
+	
+	public Rectangle getBounds() {
+		Rectangle bounds = new Rectangle(x1, y1, this.getWidth(), this.getHeight());
+		return bounds;
 	}
 }
