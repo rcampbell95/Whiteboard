@@ -17,7 +17,7 @@ public class DText extends DShape {
 		// TODO Auto-generated method stub
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setPaint(model.getColor());
-		g2.drawString(model.getText(),70,20);
+		g2.drawString(model.getText(),10,10);
 	}
 
 	public String getText() {
