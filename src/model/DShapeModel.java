@@ -12,6 +12,7 @@ public abstract class DShapeModel {
 	protected int width = 0;
 	protected int height = 0;
 	protected Color shapeColor = Color.GRAY;
+	protected String text;
 	
 	ArrayList<ModelListener> listeners;
 	
@@ -25,7 +26,7 @@ public abstract class DShapeModel {
 		y1 = randGen.nextInt(CANVAS_SIZE);
 		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
-		
+		text = "";
 	}
 	
 	public void setCoordinate(int x, int y) {
@@ -61,5 +62,11 @@ public abstract class DShapeModel {
 	public Rectangle getBounds() {
 		Rectangle bounds = new Rectangle(x1, y1, this.getWidth(), this.getHeight());
 		return bounds;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
 	}
 }

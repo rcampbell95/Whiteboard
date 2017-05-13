@@ -2,6 +2,8 @@ package model;
 
 public class DTextModel extends DShapeModel {
 
+	
+
 	@Override
 	public int getWidth() {
 		return width;
@@ -11,5 +13,4 @@ public class DTextModel extends DShapeModel {
 	public int getHeight() {
 		return height;
 	}
-
 }

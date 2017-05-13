@@ -42,6 +42,12 @@ public class Canvas extends JPanel
 	DShape selected;
 	ArrayList<DShape> shapes;
 	JPanel east;
+	String textInput;
+	JTextField text2;
+	private int lastX;
+	private int lastY;
+	private Point movingPoint;
+	private Point anchorPoint;
 
 	public Canvas()
 	{
@@ -107,7 +113,7 @@ public class Canvas extends JPanel
 		JLabel label = new JLabel("Add: ");
 		label.setBorder(new EmptyBorder(10, 10, 10, 10));
 		JButton rect = new JButton("rect");
-		rect.setBorder(new EmptyBorder(10, 10, 10, 10));
+		//rect.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		rect.addActionListener(new ActionListener()
 		{
@@ -121,7 +127,7 @@ public class Canvas extends JPanel
 		});
 
 		JButton oval = new JButton("oval");
-		oval.setBorder(new EmptyBorder(10, 10, 10, 10));
+		//oval.setBorder(new EmptyBorder(10, 10, 10, 10));
 		oval.addActionListener(new ActionListener()
 		{
 			@Override
@@ -138,10 +144,11 @@ public class Canvas extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				System.out.println("line");
+				DShapeModel model = new DLineModel();
+				addShape(model);
 			}
 		});
-		line.setBorder(new EmptyBorder(10, 10, 10, 10));
+		//line.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		JButton text = new JButton("text");
 //		text.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -149,7 +156,9 @@ public class Canvas extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				System.out.println("text");
+				DShapeModel model = new DTextModel();
+				addShape(model);
+				//System.out.println("text");
 			}
 		});
 		//text.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -181,6 +190,10 @@ public class Canvas extends JPanel
 						Color initialColor = Color.CYAN;
 						Color color = JColorChooser.showDialog(buttonPane2, "Select a color", initialColor);
 						System.out.println(color);
+						if(color != null && !color.equals(selected.getColor())) {
+							setSelectedColor(color);
+						}
+						east.repaint();
 					}
 				}
 			}
@@ -196,9 +209,10 @@ public class Canvas extends JPanel
 	{
 		JPanel buttonPane3 = new JPanel();
 		buttonPane3.setLayout(new BoxLayout(buttonPane3, BoxLayout.X_AXIS));
-		JTextField text2 = new JTextField("Whiteboard!");
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		text2 = new JTextField("Whiteboard!");
+		text2.setMaximumSize(new Dimension(300,40));
 
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fonts = ge.getAvailableFontFamilyNames();
 		JComboBox<String> comboBox = new JComboBox<>(fonts);
 		//comboBox.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -258,20 +272,38 @@ public class Canvas extends JPanel
 	private void addShape(DShapeModel model)
 	{
 		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
-
+		DShape shape;
 		if (model instanceof DRectModel)
 		{
-			shapes.add(new DRect(model));
+			shape = new DRect(model);
+			selected = shape;
+			shapes.add(shape);
+
 		} else if (model instanceof DOvalModel)
 		{
-			shapes.add(new DOval(model));
+			shape = new DOval(model);
+			selected = shape;
+			shapes.add(shape);
+
 		} else if (model instanceof DLineModel)
 		{
-			shapes.add(new DLine(model));
+			shape = new DLine(model);
+			selected = shape;
+			shapes.add(shape);
 		} else if (model instanceof DTextModel)
 		{
-			shapes.add(new DText(model));
+			shape = new DText(model);
+			//System.out.println(text2.getText());
+			model.setText(text2.getText());
+			selected = shape;
+			shapes.add(shape);
 		}
 		east.repaint();
 	}
+
+	public void setSelectedColor(Color c) {
+		selected.setColor(c);
+	}
+
+	public void selectObjectForClick(Point pt)
 }
