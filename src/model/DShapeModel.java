@@ -14,8 +14,6 @@ public abstract class DShapeModel {
 	protected Color shapeColor = Color.GRAY;
 	protected String text;
 
-	ArrayList<ModelListener> listeners;
-
 	public DShapeModel() {
 		Random randGen = new Random();
 		int UPPER_BOUND = 75;
@@ -31,11 +29,11 @@ public abstract class DShapeModel {
 
 
 	public void addListener(ModelListener listener) {
-		listeners.add(listener);
+		list.add(listener);
 	}
 
 	public void removeListener(ModelListener listener) {
-		listeners.remove(listener);
+		list.remove(listener);
 	}
 
 
