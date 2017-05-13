@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Point;
 
 public class Canvas extends JPanel
 {
@@ -87,6 +88,7 @@ public class Canvas extends JPanel
 				int x = e.getX();
 				int y = e.getY();
 				System.out.println(x + "    " + y);
+				selectObjectForClick(e.getPoint());
 			}
 		});
 
@@ -308,5 +310,30 @@ public class Canvas extends JPanel
 	public void selectObjectForClick(Point pt) {
 		lastX = pt.x;
 		lastY = pt.y;
+		movingPoint = null;
+		anchorPoint = null;
+		if(selected != null) {
+			for(Point point: selected.getKnobs()) {
+				if(selected.selectedKnob(pt, point)) {
+					movingPoint = new Point(point);
+					anchorPoint = selected.getAnchorForSelectedKnob(point);
+					break;
+				}
+			}
+		} if(movingPoint == null) {
+			selected = null;
+			for(DShape shape: shapes) {
+				if(shape.containsPoint(pt)) {
+					selected = shape;
+				}
+			}
+		} if(selected != null && selected instanceof DText) {
+			DText textShape = (DText) selected;
+
+		}
+		repaint();
+	}
+	public boolean hasSelected() {
+		return selected != null;
 	}
 }

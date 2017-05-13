@@ -16,7 +16,6 @@ public class Whiteboard extends JFrame {
 		canvas.setVisible(true);		
 		whiteboard.setVisible(true);
 		
-		
 	}
 
 }
