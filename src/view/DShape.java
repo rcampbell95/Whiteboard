@@ -45,6 +45,10 @@ public abstract class DShape {
 	public boolean selectedKnob(Point point, Point knobCenter) {
 		Rectangle knob = new Rectangle(knobCenter.x - 9/2, knobCenter.y - 9/2,9,9);
 		return knob.contains(point);
+
+	public void getKnobs() {
+		
+
 	}
 
 	public abstract void draw(Graphics g);

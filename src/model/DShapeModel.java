@@ -19,13 +19,14 @@ public abstract class DShapeModel {
 		int UPPER_BOUND = 75;
 		int LOWER_BOUND = 25;
 		int CANVAS_SIZE = 400;
-		
+
 		x1 = randGen.nextInt(CANVAS_SIZE);
 		y1 = randGen.nextInt(CANVAS_SIZE);
 		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		text = "";
 	}
+
 
 	public void addListener(ModelListener listener) {
 		list.add(listener);
@@ -35,36 +36,37 @@ public abstract class DShapeModel {
 		list.remove(listener);
 	}
 
+
 	public void setCoordinate(int x, int y) {
 		this.x1 = x;
 		this.y1 = y;
 	}
-	
+
 	public void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	public void setColor(Color shapeColor) {
 		this.shapeColor = shapeColor;
 	}
-	
+
 	public int getX() {
 		return this.x1;
 	}
-	
+
 	public int getY() {
 		return this.y1;
 	}
-	
+
 	public abstract int getWidth();
-	
+
 	public abstract int getHeight();
-	
+
 	public Color getColor() {
 		return this.shapeColor;
 	}
-	
+
 	public Rectangle getBounds() {
 		Rectangle bounds = new Rectangle(x1, y1, this.getWidth(), this.getHeight());
 		return bounds;
@@ -74,5 +76,19 @@ public abstract class DShapeModel {
 	}
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public void addTableListener(TableModel tableModel) {
+		this.list.add(tableModel);		
+	}
+
+	public void removeTableListener(TableModel tableModel) {
+		if(this.list.contains(tableModel))
+		{
+			this.list.remove(tableModel);
+
+		}
+
+
 	}
 }

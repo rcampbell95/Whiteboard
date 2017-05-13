@@ -16,8 +16,15 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
 
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
@@ -43,6 +50,7 @@ public class Canvas extends JPanel
 	private int lastY;
 	private Point movingPoint;
 	private Point anchorPoint;
+
 
 	public Canvas()
 	{
@@ -84,8 +92,9 @@ public class Canvas extends JPanel
 				System.out.println(x + "    " + y);
 				selectObjectForClick(e.getPoint());
 			}
-		});
 
+		});
+		
 		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
 		JButton b = new JButton("b");
 		b.setVisible(false);
@@ -301,8 +310,13 @@ public class Canvas extends JPanel
 		selected.setColor(c);
 	}
 
-	public void selectObjectForClick(Point pt) {
 
+
+	public boolean hasSelected() {
+		return selected != null;
+	}
+	public void selectObjectForClick(Point pt)
+	{
 		lastX = pt.x;
 		lastY = pt.y;
 		movingPoint = null;
@@ -327,9 +341,6 @@ public class Canvas extends JPanel
 
 		}
 		repaint();
-	}
-	public boolean hasSelected() {
-		return selected != null;
 
 	}
 }
