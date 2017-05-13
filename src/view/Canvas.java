@@ -302,7 +302,7 @@ public class Canvas extends JPanel
 	}
 
 	public void selectObjectForClick(Point pt) {
-<<<<<<< HEAD
+
 		lastX = pt.x;
 		lastY = pt.y;
 		movingPoint = null;
@@ -330,8 +330,6 @@ public class Canvas extends JPanel
 	}
 	public boolean hasSelected() {
 		return selected != null;
-=======
 
->>>>>>> 600c90f050f5d99fe18ce0769d014f550409eae3
 	}
 }
