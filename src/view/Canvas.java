@@ -305,5 +305,8 @@ public class Canvas extends JPanel
 		selected.setColor(c);
 	}
 
-	public void selectObjectForClick(Point pt)
+	public void selectObjectForClick(Point pt) {
+		lastX = pt.x;
+		lastY = pt.y;
+	}
 }
