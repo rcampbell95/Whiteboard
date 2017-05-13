@@ -28,7 +28,15 @@ public abstract class DShapeModel {
 		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		text = "";
 	}
-	
+
+	public void addListener(ModelListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeListener(ModelListener listener) {
+		listeners.remove(listener);
+	}
+
 	public void setCoordinate(int x, int y) {
 		this.x1 = x;
 		this.y1 = y;
