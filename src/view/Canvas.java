@@ -24,6 +24,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
@@ -48,6 +49,8 @@ public class Canvas extends JPanel
 	private int lastY;
 	private Point movingPoint;
 	private Point anchorPoint;
+	private int x; 
+	private int y;
 
 	public Canvas()
 	{
@@ -84,12 +87,14 @@ public class Canvas extends JPanel
 			@Override
 			public void mousePressed(MouseEvent e)
 			{
-				int x = e.getX();
-				int y = e.getY();
+				 x = e.getX();
+				 y = e.getY();
 				System.out.println(x + "    " + y);
-			}
+				selectObjectForClick(e.getPoint());
+				
+			}			
 		});
-
+		
 		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
 		JButton b = new JButton("b");
 		b.setVisible(false);
@@ -305,5 +310,9 @@ public class Canvas extends JPanel
 		selected.setColor(c);
 	}
 
+
 	public void selectObjectForClick(Point pt)
+	{
+		
+	}
 }
