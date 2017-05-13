@@ -19,7 +19,7 @@ public abstract class DShape {
 	}
 
 	public void getKnobs() {
-		;
+		
 	}
 
 	public abstract void draw(Graphics g);

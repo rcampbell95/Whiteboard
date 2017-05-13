@@ -49,8 +49,7 @@ public class Canvas extends JPanel
 	private int lastY;
 	private Point movingPoint;
 	private Point anchorPoint;
-	private int x; 
-	private int y;
+
 
 	public Canvas()
 	{
@@ -87,9 +86,9 @@ public class Canvas extends JPanel
 			@Override
 			public void mousePressed(MouseEvent e)
 			{
-				 x = e.getX();
-				 y = e.getY();
-				System.out.println(x + "    " + y);
+				/* x = e.getX();
+				 y = e.getY();*/
+				//System.out.println(x + "    " + y);
 				selectObjectForClick(e.getPoint());
 				
 			}			
