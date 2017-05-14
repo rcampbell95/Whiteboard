@@ -49,8 +49,9 @@ public abstract class DShape {
 		int index = getKnobs().indexOf(point);
 		return new Point(knobs.get((index + knobs.size() / 2) % knobs.size()));
 	}
-	public boolean selectedKnob(Point point, Point knobCenter) {
-		Rectangle knob = new Rectangle(knobCenter.x - 9/2, knobCenter.y - 9/2,9,9);
+	public boolean selectedKnob(Point point, Point knobCenter)
+	{
+		Rectangle knob = new Rectangle(knobCenter.x - 9 / 2, knobCenter.y - 9 / 2, 9, 9);
 		return knob.contains(point);
 	}
 

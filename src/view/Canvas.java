@@ -238,15 +238,50 @@ public class Canvas extends JPanel
 		JPanel buttonPane4 = new JPanel();
 		buttonPane4.setLayout(new BoxLayout(buttonPane4, BoxLayout.X_AXIS));
 		JButton moveToFront = new JButton("Move to Front");
+		moveToFront.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				moveToFront(selected);
+			}
+		});
 		JButton moveToBack = new JButton("Move to Back");
-		JButton removeSHape = new JButton("Remove Shape");
-		buttonPane4.add(moveToFront);
-		buttonPane4.add(moveToBack);
-		buttonPane4.add(removeSHape);
-		buttonPane4.setBorder(new EmptyBorder(10, 10, 10, 10));
-		buttonPane4.setBackground(Color.WHITE);
-		pan.add(buttonPane4);
+		moveToBack.addActionListener(new ActionListener()
+		 {
+			 @Override
+			 public void actionPerformed(ActionEvent e)
+			 {
+			 	moveToBack(selected);
+			 }
+		 });
+		 JButton removeShape = new JButton("Remove Shape");
+		 buttonPane4.add(moveToFront);
+		 buttonPane4.add(moveToBack);
+		 buttonPane4.add(removeShape);
+		 buttonPane4.setBorder(new EmptyBorder(10, 10, 10, 10));
+		 buttonPane4.setBackground(Color.WHITE);
+		 pan.add(buttonPane4);
 	}
+
+	public void moveToFront(DShape object) {
+		if(!shapes.isEmpty() && shapes.remove(object)) {
+			shapes.add(object);
+		}
+		repaint(object);
+	}
+
+	public void moveToBack(DShape object) {
+		if (!shapes.isEmpty() && shapes.remove(object)){
+			shapes.add(0,object);
+		}
+		repaint(object);
+	}
+
+	public void repaint(DShape object) {
+		repaint(object.getBounds());
+	}
+
 
 	private void addTablePane(JPanel pan)
 	{
@@ -315,6 +350,7 @@ public class Canvas extends JPanel
 	public boolean hasSelected() {
 		return selected != null;
 	}
+
 	public void selectObjectForClick(Point pt)
 	{
 		lastX = pt.x;
