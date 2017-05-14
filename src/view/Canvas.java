@@ -366,10 +366,7 @@ public class Canvas extends JPanel
 					selected = shape;
 				}
 			}
-		} if(selected != null && selected instanceof DText) {
-			DText textShape = (DText) selected;
-
-		}
+		} 
 		repaint();
 	}
 }
