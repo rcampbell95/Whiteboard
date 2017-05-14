@@ -341,6 +341,5 @@ public class Canvas extends JPanel
 
 		}
 		repaint();
-
 	}
 }

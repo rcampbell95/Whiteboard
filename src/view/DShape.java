@@ -18,6 +18,12 @@ public abstract class DShape {
 		knobs = null;
 		needsRecomputeKnobs = false;
 	}
+	public void drawKnobs(Graphics g) {
+		g.setColor(Color.BLACK);
+		for(Point point: getKnobs()) {
+			g.fillRect(point.x - 9/2, point.y - 9/2, 9, 9);
+		}
+	}
 
 	public Rectangle getBounds() {
 		return model.getBounds();
@@ -36,6 +42,7 @@ public abstract class DShape {
 			knobs.add(temp);
 			needsRecomputeKnobs = false;
 		}
+		return knobs;
 	}
 
 	public Point getAnchorForSelectedKnob(Point point) {
@@ -45,14 +52,9 @@ public abstract class DShape {
 	public boolean selectedKnob(Point point, Point knobCenter) {
 		Rectangle knob = new Rectangle(knobCenter.x - 9/2, knobCenter.y - 9/2,9,9);
 		return knob.contains(point);
-
-	public void getKnobs() {
-		
-
 	}
 
 	public abstract void draw(Graphics g);
-
 
 	public void setColor(Color c) {
 		model.setColor(c);
@@ -79,5 +81,9 @@ public abstract class DShape {
 			return true;
 		}
 		return false;
+	}
+	public void modifyShapeWithPoints(Point anchor, Point cursor) {
+		needsRecomputeKnobs = true;
+		model.modifyWithPoints(anchor, cursor);
 	}
 }

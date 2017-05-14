@@ -3,6 +3,7 @@ package model;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.awt.Point;
 import java.util.Random;
 
 public abstract class DShapeModel {
@@ -71,6 +72,12 @@ public abstract class DShapeModel {
 		Rectangle bounds = new Rectangle(x1, y1, this.getWidth(), this.getHeight());
 		return bounds;
 	}
+	public void setBounds(int x, int y, int width, int height) {
+		x1 = x;
+		y1 = y;
+		this.width = width;
+		this.height = height;
+	}
 	public String getText() {
 		return text;
 	}
@@ -88,7 +95,12 @@ public abstract class DShapeModel {
 			this.list.remove(tableModel);
 
 		}
-
-
+	}
+	public void modifyWithPoints(Point anchor, Point cursor) {
+		int x = (anchor.x < cursor.x ? anchor.x : cursor.x);
+		int y = (anchor.y < cursor.y ? anchor.y : cursor.y);
+		int width = Math.abs(anchor.x - cursor.x);
+		int height = Math.abs(anchor.y - cursor.y);
+		setBounds(x,y,width,height);
 	}
 }
