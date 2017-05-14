@@ -7,11 +7,12 @@ import javax.swing.table.AbstractTableModel;
 public class TableModel extends AbstractTableModel implements ModelListener{
 
 	ArrayList<DShapeModel> modelArray;
-
+	public static final String [] COLUMN_HEADERS = { "X", "Y", "Width", "Height"};	
 
 	public TableModel()
 	{
 		super();
+		
 		modelArray = new  ArrayList<DShapeModel>();
 	}
 
@@ -87,6 +88,11 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 			modelArray.add(model);
 			
 		}
+	}
+	@Override
+	public boolean isCellEditable(int row, int column)
+	{
+		return false;
 	}
 
 }

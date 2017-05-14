@@ -30,7 +30,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
+import model.*;
 import java.util.Iterator;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -40,7 +40,7 @@ import java.awt.Point;
 public class Canvas extends JPanel
 {
 
-	DefaultTableModel model;
+	TableModel model;
 	DShape selected;
 	ArrayList<DShape> shapes;
 	JPanel east;
@@ -50,6 +50,7 @@ public class Canvas extends JPanel
 	private int lastY;
 	private Point movingPoint;
 	private Point anchorPoint;
+	
 
 
 	public Canvas()
@@ -287,16 +288,9 @@ public class Canvas extends JPanel
 	{
 
 		String[] str = {"X", "Y", "Width", "Height"};
-		model = new DefaultTableModel(0, str.length)
-		{
-			@Override
-			public boolean isCellEditable(int row, int column)
-			{
-				//all cells false
-				return false;
-			}
-		};
-		model.setColumnIdentifiers(str);
+		model = new TableModel();
+		
+		//model.setColumnIdentifiers(str);
 		JTable tablePane = new JTable(model);
 
 		tablePane.setLayout(new BoxLayout(tablePane, BoxLayout.X_AXIS));
