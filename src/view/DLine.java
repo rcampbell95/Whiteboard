@@ -13,11 +13,14 @@ public class DLine extends DShape {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g, boolean selected) {
 		Graphics2D g2 = (Graphics2D)g;
 		Line2D line = new Line2D.Float(10,10,30,30);
 		g2.setColor(model.getColor());
 		g2.draw(line);
+		if(selected) {
+			drawKnobs(g);
+		}
 	}
 
 }

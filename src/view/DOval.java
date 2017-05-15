@@ -15,10 +15,13 @@ public class DOval extends DShape {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g, boolean selected) {
 		g.setColor(model.getColor());
 		Rectangle bounds = model.getBounds();
 		g.fillOval(model.getX(), model.getY(), model.getWidth(), model.getHeight());
+		if(selected) {
+			drawKnobs(g);
+		}
 		
 	}
 

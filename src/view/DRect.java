@@ -14,12 +14,15 @@ public class DRect extends DShape {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g, boolean selected) {
 		//Rectangle shape = new Rectangle(model.getX(), model.getY(), model.getWidth(), model.getHeight());
 		g.setColor(model.getColor());
 		Rectangle bounds = model.getBounds();
 		g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		//((Graphics2D)g).draw(shape);
+		if(selected) {
+			drawKnobs(g);
+		}
 	}
 
 }

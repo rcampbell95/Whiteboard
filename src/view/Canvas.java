@@ -70,7 +70,7 @@ public class Canvas extends JPanel
 				for (Iterator<DShape> i = shapes.iterator(); i.hasNext(); )
 				{
 					DShape shape = i.next();
-					shape.draw(g);
+					shape.draw(g,(selected == shape));
 				}
 			}
 		};

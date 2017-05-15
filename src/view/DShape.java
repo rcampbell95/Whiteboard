@@ -55,7 +55,7 @@ public abstract class DShape {
 		return knob.contains(point);
 	}
 
-	public abstract void draw(Graphics g);
+	public abstract void draw(Graphics g, boolean selected);
 
 	public void setColor(Color c) {
 		model.setColor(c);
