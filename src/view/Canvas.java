@@ -1,8 +1,33 @@
 package view;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import model.DLineModel;
@@ -10,34 +35,9 @@ import model.DOvalModel;
 import model.DRectModel;
 import model.DShapeModel;
 import model.DTextModel;
+import model.TableModel;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import model.*;
-import java.util.Iterator;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.Point;
-
-public class Canvas extends JPanel
+public class Canvas extends JPanel 
 {
 
 	/**
@@ -91,6 +91,22 @@ public class Canvas extends JPanel
 		addButtonPane4(west);
 		addTablePane(west);
 		west.setBackground(Color.WHITE);
+		
+		east.addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				int dx = e.getX() - lastX;
+				int dy = e.getY() - lastY;
+				lastX = e.getX();
+				lastY = e.getY();
+				if(movingPoint != null) {
+					movingPoint.x += dx;
+					movingPoint.y += dy;
+					selected.modifyShapeWithPoints(anchorPoint, movingPoint);
+				} else if(selected != null) {
+					selected.move(dx,dy);
+				}
+			}
+		});
 
 		east.addMouseListener(new MouseAdapter()
 		{
@@ -341,6 +357,7 @@ public class Canvas extends JPanel
 			selected = shape;
 			shapes.add(shape);
 		}
+		
 		east.repaint();
 	}
 
@@ -377,5 +394,19 @@ public class Canvas extends JPanel
 			}
 		} 
 		repaint();
+	}
+	public void repaintArea(Rectangle bounds) {
+		repaint(bounds);
+	}
+	public void removeShape(DShape shape) {
+		shapes.remove(shape);
+		repaintArea(shape.getBigBounds());
+	}
+	public void repaintShape(DShape shape) {
+		if(shape == selected) {
+			repaint(shape.getBigBounds());
+		} else {
+			repaint(shape.getBounds());
+		}
 	}
 }

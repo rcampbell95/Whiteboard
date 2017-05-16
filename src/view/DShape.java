@@ -1,22 +1,27 @@
 package view;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import model.DShapeModel;
+import model.ModelListener;
 
-public abstract class DShape {
+public abstract class DShape implements ModelListener {
 	DShapeModel model;
 	ArrayList<Point> knobs;
+	Rectangle lastBounds;
+	Canvas canvas;
 	boolean needsRecomputeKnobs;
 
 	public DShape(DShapeModel model) {
 		this.model = model;
 		knobs = null;
+		lastBounds = new Rectangle(getBounds());
 		needsRecomputeKnobs = false;
+		model.addListener(this);
 	}
 	public void drawKnobs(Graphics g) {
 		g.setColor(Color.BLACK);
@@ -27,6 +32,23 @@ public abstract class DShape {
 
 	public Rectangle getBounds() {
 		return model.getBounds();
+	}
+	
+	public Rectangle getBigBounds() {
+		return getBigBoundsForModel(model);
+	}
+	
+	public Rectangle getBigBoundsForModel(DShapeModel model) {
+		Rectangle b = model.getBounds();
+		return new Rectangle(b.x-9/2,b.y - 9/2,b.width + 9,b.height + 9);
+	}
+	public Rectangle getBigBoundsOfLastPosition() {
+		return new Rectangle(lastBounds.x - 9/2,lastBounds.y - 9/2,lastBounds.width + 9,lastBounds.height + 9);
+	}
+	
+	public void move(int x, int y) {
+		needsRecomputeKnobs = true;
+		model.move(x,y);
 	}
 
 	public ArrayList<Point> getKnobs() {
@@ -86,5 +108,20 @@ public abstract class DShape {
 	public void modifyShapeWithPoints(Point anchor, Point cursor) {
 		needsRecomputeKnobs = true;
 		model.modifyWithPoints(anchor, cursor);
+	}
+	
+	@Override
+	public void modelChanged(DShapeModel model) {
+		if(this.model == model) {
+			if(model.markedForRemoval()) {
+				canvas.removeShape(this);
+				return;
+			}
+			canvas.repaintShape(this);
+			if(!lastBounds.equals(getBounds())) {
+				canvas.repaintArea(getBigBoundsOfLastPosition());
+				lastBounds = new Rectangle(getBounds());
+			}
+		}
 	}
 }
