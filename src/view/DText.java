@@ -7,8 +7,8 @@ import model.DShapeModel;
 
 public class DText extends DShape {
 
-	public DText(DShapeModel model) {
-		super(model);
+	public DText(DShapeModel model, Canvas canvas) {
+		super(model, canvas);
 		// TODO Auto-generated constructor stub
 	}
 

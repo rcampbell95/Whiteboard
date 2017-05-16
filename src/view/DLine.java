@@ -8,8 +8,8 @@ import model.DShapeModel;
 
 public class DLine extends DShape {
 
-	public DLine(DShapeModel model) {
-		super(model);
+	public DLine(DShapeModel model, Canvas canvas) {
+		super(model,canvas);
 	}
 
 	@Override

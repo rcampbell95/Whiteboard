@@ -16,8 +16,9 @@ public abstract class DShape implements ModelListener {
 	Canvas canvas;
 	boolean needsRecomputeKnobs;
 
-	public DShape(DShapeModel model) {
+	public DShape(DShapeModel model, Canvas canvas) {
 		this.model = model;
+		this.canvas = canvas;
 		knobs = null;
 		lastBounds = new Rectangle(getBounds());
 		needsRecomputeKnobs = false;

@@ -7,8 +7,8 @@ import model.DShapeModel;
 
 public class DOval extends DShape {
 
-	public DOval(DShapeModel model) {
-		super(model);
+	public DOval(DShapeModel model, Canvas canvas) {
+		super(model, canvas);
 		// TODO Auto-generated constructor stub
 	}
 

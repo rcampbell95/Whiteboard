@@ -7,8 +7,8 @@ import model.DShapeModel;
 
 public class DRect extends DShape {
 
-	public DRect(DShapeModel model) {
-		super(model);
+	public DRect(DShapeModel model, Canvas canvas) {
+		super(model, canvas);
 		// TODO Auto-generated constructor stub
 	}
 
