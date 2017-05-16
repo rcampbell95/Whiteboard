@@ -1,8 +1,33 @@
 package view;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import model.DLineModel;
@@ -10,36 +35,16 @@ import model.DOvalModel;
 import model.DRectModel;
 import model.DShapeModel;
 import model.DTextModel;
+import model.ModelListener;
+import model.TableModel;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import model.*;
-import java.util.Iterator;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.Point;
-
-public class Canvas extends JPanel
+public class Canvas extends JPanel implements ModelListener 
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	TableModel model;
 	DShape selected;
 	ArrayList<DShape> shapes;
@@ -61,8 +66,15 @@ public class Canvas extends JPanel
 		this.setSize(400, 400);
 		this.setBackground(Color.WHITE);
 		JPanel west = new JPanel();
+		selected = null;
+		movingPoint = null;
 		east = new JPanel()
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void paintComponent(Graphics g)
 			{
@@ -70,7 +82,7 @@ public class Canvas extends JPanel
 				for (Iterator<DShape> i = shapes.iterator(); i.hasNext(); )
 				{
 					DShape shape = i.next();
-					shape.draw(g);
+					shape.draw(g,(selected == shape));
 				}
 			}
 		};
@@ -82,20 +94,34 @@ public class Canvas extends JPanel
 		addButtonPane4(west);
 		addTablePane(west);
 		west.setBackground(Color.WHITE);
+		
+		
 
 		east.addMouseListener(new MouseAdapter()
 		{
 			@Override
 			public void mousePressed(MouseEvent e)
 			{
-				int x = e.getX();
-				int y = e.getY();
-				System.out.println(x + "    " + y);
+				
 				selectObjectForClick(e.getPoint());
 			}
 
 		});
-		
+		east.addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				int dx = e.getX() - lastX;
+				int dy = e.getY() - lastY;
+				lastX = e.getX();
+				lastY = e.getY();
+				if(movingPoint != null) {
+					movingPoint.x += dx;
+					movingPoint.y += dy;
+					selected.modifyShapeWithPoints(anchorPoint, movingPoint);
+				} else if(selected != null) {
+					selected.move(dx,dy);
+				}
+			}
+		});
 		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
 		JButton b = new JButton("b");
 		b.setVisible(false);
@@ -199,7 +225,7 @@ public class Canvas extends JPanel
 						if(color != null && !color.equals(selected.getColor())) {
 							setSelectedColor(color);
 						}
-						east.repaint();
+						repaint();
 					}
 				}
 			}
@@ -269,14 +295,14 @@ public class Canvas extends JPanel
 		if(!shapes.isEmpty() && shapes.remove(object)) {
 			shapes.add(object);
 		}
-		repaint(object);
+		repaintShape(object);
 	}
 
 	public void moveToBack(DShape object) {
 		if (!shapes.isEmpty() && shapes.remove(object)){
 			shapes.add(0,object);
 		}
-		repaint(object);
+		repaintShape(object);
 	}
 
 	public void repaint(DShape object) {
@@ -306,33 +332,41 @@ public class Canvas extends JPanel
 	private void addShape(DShapeModel model)
 	{
 		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
-		DShape shape;
+		
+		
+		if(selected != null) {
+			repaintShape(selected);
+		}
+		DShape shape = null;
 		if (model instanceof DRectModel)
 		{
-			shape = new DRect(model);
+			shape = new DRect(model, this);
 			selected = shape;
 			shapes.add(shape);
 
 		} else if (model instanceof DOvalModel)
 		{
-			shape = new DOval(model);
+			shape = new DOval(model, this);
 			selected = shape;
 			shapes.add(shape);
 
 		} else if (model instanceof DLineModel)
 		{
-			shape = new DLine(model);
+			shape = new DLine(model,this);
 			selected = shape;
 			shapes.add(shape);
 		} else if (model instanceof DTextModel)
 		{
-			shape = new DText(model);
+			shape = new DText(model,this);
 			//System.out.println(text2.getText());
 			model.setText(text2.getText());
 			selected = shape;
 			shapes.add(shape);
 		}
-		east.repaint();
+		model.addListener(this);
+		repaintShape(shape);
+		
+		
 	}
 
 	public void setSelectedColor(Color c) {
@@ -366,10 +400,27 @@ public class Canvas extends JPanel
 					selected = shape;
 				}
 			}
-		} if(selected != null && selected instanceof DText) {
-			DText textShape = (DText) selected;
-
-		}
+		} 
 		repaint();
+	}
+	public void repaintArea(Rectangle bounds) {
+		east.repaint(bounds);
+		
+	}
+	public void removeShape(DShape shape) {
+		shapes.remove(shape);
+		repaintArea(shape.getBigBounds());
+	}
+	public void repaintShape(DShape shape) {
+		if(shape == selected) {
+			repaint(shape.getBigBounds());
+			
+		} else {
+			repaint(shape.getBounds());
+		}
+	}
+	@Override 
+	public void modelChanged(DShapeModel model) {
+		
 	}
 }

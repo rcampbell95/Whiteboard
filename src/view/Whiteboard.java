@@ -9,6 +9,7 @@ public class Whiteboard extends JFrame {
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Whiteboard whiteboard = new Whiteboard();
 		whiteboard.setSize(800,400);
+		whiteboard.setLocationRelativeTo(null);
 		whiteboard.setLayout(new BorderLayout());
 		whiteboard.setTitle("Whiteboard");
 		Canvas canvas = new Canvas();

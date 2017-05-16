@@ -7,20 +7,21 @@ import java.awt.Point;
 import java.util.Random;
 
 public abstract class DShapeModel {
-	ArrayList<ModelListener> list = new ArrayList<>();
+	ArrayList<ModelListener> list;
 	protected int x1 = 0;
 	protected int y1 = 0;
 	protected int width = 0;
 	protected int height = 0;
 	protected Color shapeColor = Color.GRAY;
 	protected String text;
+	private boolean markedForRemoval;
 
 	public DShapeModel() {
 		Random randGen = new Random();
 		int UPPER_BOUND = 75;
 		int LOWER_BOUND = 25;
 		int CANVAS_SIZE = 400;
-
+		list = new ArrayList<ModelListener>();
 		x1 = randGen.nextInt(CANVAS_SIZE);
 		y1 = randGen.nextInt(CANVAS_SIZE);
 		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
@@ -50,6 +51,17 @@ public abstract class DShapeModel {
 
 	public void setColor(Color shapeColor) {
 		this.shapeColor = shapeColor;
+	}
+	
+	public void move(int x, int y) {
+		x1 += x;
+		y1 += y;
+	}
+	
+	public void notifyListeners() {
+		for(ModelListener listener: list) {
+			listener.modelChanged(this);
+		}
 	}
 
 	public int getX() {
@@ -102,5 +114,8 @@ public abstract class DShapeModel {
 		int width = Math.abs(anchor.x - cursor.x);
 		int height = Math.abs(anchor.y - cursor.y);
 		setBounds(x,y,width,height);
+	}
+	public boolean markedForRemoval() {
+		return markedForRemoval;
 	}
 }
