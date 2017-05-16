@@ -54,7 +54,7 @@ public abstract class DShape {
 		Rectangle knob = new Rectangle(knobCenter.x - 9 / 2, knobCenter.y - 9 / 2, 9, 9);
 		return knob.contains(point);
 	}
-
+	
 	public abstract void draw(Graphics g, boolean selected);
 
 	public void setColor(Color c) {
@@ -71,7 +71,7 @@ public abstract class DShape {
 	}
 	public boolean containsPoint(Point point) {
 		Rectangle bounds = model.getBounds();
-
+		
 		if(bounds.contains(point)) {
 			return true;
 		} if(bounds.width == 0 && Math.abs(point.x-bounds.x) <= 3 

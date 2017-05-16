@@ -40,6 +40,10 @@ import java.awt.Point;
 public class Canvas extends JPanel
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	TableModel model;
 	DShape selected;
 	ArrayList<DShape> shapes;
@@ -63,6 +67,11 @@ public class Canvas extends JPanel
 		JPanel west = new JPanel();
 		east = new JPanel()
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void paintComponent(Graphics g)
 			{
