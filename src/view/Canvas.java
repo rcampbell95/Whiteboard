@@ -287,7 +287,7 @@ public class Canvas extends JPanel
 	private void addTablePane(JPanel pan)
 	{
 
-		String[] str = {"X", "Y", "Width", "Height"};
+		
 		model = new TableModel();
 		
 		//model.setColumnIdentifiers(str);
