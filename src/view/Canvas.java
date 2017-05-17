@@ -271,7 +271,7 @@ public class Canvas extends JPanel implements ModelListener
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				moveToFront(selected);
+				moveSelectedToFront();
 			}
 		});
 		JButton moveToBack = new JButton("Move to Back");
@@ -280,7 +280,7 @@ public class Canvas extends JPanel implements ModelListener
 			 @Override
 			 public void actionPerformed(ActionEvent e)
 			 {
-			 	moveToBack(selected);			 	
+			 	moveSelectedToBack();
 			 }
 		 });
 		
@@ -305,17 +305,24 @@ public class Canvas extends JPanel implements ModelListener
 		 pan.add(buttonPane4);
 	}
 
+	public void moveSelectedToFront() {
+	    moveToFront(selected);
+    }
 	public void moveToFront(DShape object) {
 		if(!shapes.isEmpty() && shapes.remove(object)) {
-			shapes.add(0,object);
+			shapes.add(object);
 			
 		}
 		repaintShape(object);
 	}
 
+	public void moveSelectedToBack() {
+	    moveToBack(selected);
+    }
+
 	public void moveToBack(DShape object) {
 		if (!shapes.isEmpty() && shapes.remove(object)){
-			shapes.add(object);
+			shapes.add(0, object);
 		}
 		repaintShape(object);
 	}
