@@ -26,7 +26,6 @@ public abstract class DShapeModel {
 		y1 = randGen.nextInt(CANVAS_SIZE);
 		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
-		text = "";
 	}
 
 
@@ -78,12 +77,6 @@ public abstract class DShapeModel {
 		y1 = y;
 		this.width = width;
 		this.height = height;
-	}
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
 	}
 
 	public void addTableListener(TableModel tableModel) {

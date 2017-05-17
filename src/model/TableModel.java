@@ -78,6 +78,7 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 			modelArray.add(0, model);
 			
 		}
+		
 	}
 
 	public void moveToBack(DShapeModel model)

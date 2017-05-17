@@ -10,8 +10,8 @@ public class DTextModel extends DShapeModel {
 		return textFont;
 	}
 	
-	public void setFont(Font font) {
-		textFont = font;
+	public void setFont(String name, double size) {
+		textFont = new Font(name, 0, (int) size);
 	}
 
 	@Override
@@ -22,5 +22,13 @@ public class DTextModel extends DShapeModel {
 	@Override
 	public int getHeight() {
 		return height;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+	
+	public String getText() {
+		return text;
 	}
 }
