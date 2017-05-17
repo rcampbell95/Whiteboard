@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.sun.javafx.geom.Rectangle;
+
 public class TableModel extends AbstractTableModel implements ModelListener{
 
 	ArrayList<DShapeModel> modelArray;
@@ -63,24 +65,23 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 
 	@Override
 	public Object getValueAt(int arg0, int arg1) {
+		
+		
+		switch (arg1) {
+        case 0:
+            return modelArray.get(arg0).getBounds().getX();
+        case 1:
+            return modelArray.get(arg0).getBounds().getY();
+        case 2:
+            return modelArray.get(arg0).getBounds().getWidth();
+        case 3:
+            return modelArray.get(arg0).getBounds().getHeight();
+        case 4:
+            return modelArray.get(arg0);
+        default:
+            return null;}
 
-		 Rectangle bounds = modelArray.get(arg0).getBounds();
-	        switch (arg1) {
-	        case 0:
-	            return bounds.x;
-	        case 1:
-	            return bounds.y;
-	        case 2:
-	            return bounds.width;
-	        case 3:
-	            return bounds.height;
-	        case 4:
-	            return modelArray.get(arg0);
-	        default:
-	            return null;
-	        }
-
-		return null;
+		
 	}
 
 	@Override
