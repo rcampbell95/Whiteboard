@@ -292,8 +292,8 @@ public class Canvas extends JPanel implements ModelListener
 			 {
 				if(selected != null)
 				{
-			 	model.removeModel2(shapes.indexOf(selected));
-			 	removeShape(selected);
+
+			 	markSelectedShapeForRemoval();
 				}
 			 }
 		 });
@@ -308,7 +308,18 @@ public class Canvas extends JPanel implements ModelListener
 	public void moveSelectedToFront() {
 	    moveToFront(selected);
     }
+
+
+    public void markSelectedShapeForRemoval() {
+	    markForRemoval(selected);
+	    selected = null;
+    }
+    public void markForRemoval(DShape shape) {
+        shape.getModel().removeListener(this);
+        shape.markForRemoval();
+	}
 	public void moveToFront(DShape object) {
+	    didMoveToFront(object);
 		if(!shapes.isEmpty() && shapes.remove(object)) {
 			shapes.add(object);
 			
@@ -321,6 +332,7 @@ public class Canvas extends JPanel implements ModelListener
     }
 
 	public void moveToBack(DShape object) {
+	    didMoveToBack(object);
 		if (!shapes.isEmpty() && shapes.remove(object)){
 			shapes.add(0, object);
 		}
@@ -386,7 +398,7 @@ public class Canvas extends JPanel implements ModelListener
 			shapes.add(shape);
 		}
 		model.addListener(this);
-		this.model.addModel(model);
+		addToTable(shape);
 		repaintShape(shape);
 		
 	}
@@ -422,7 +434,8 @@ public class Canvas extends JPanel implements ModelListener
 					selected = shape;
 				}
 			}
-		} 
+		}
+		updateTableSelection(selected);
 		east.repaint();
 	}
 	public void repaintArea(Rectangle bounds) {
@@ -431,6 +444,7 @@ public class Canvas extends JPanel implements ModelListener
 	}
 	public void removeShape(DShape shape) {
 		shapes.remove(shape);
+		didRemove(shape);
 		repaintArea(shape.getBigBounds());
 	}
 	public void repaintShape(DShape shape) {
@@ -442,6 +456,34 @@ public class Canvas extends JPanel implements ModelListener
 			
 		}
 	}
+
+	public void updateTableSelection(DShape selected) {
+	    tablePane.clearSelection();
+	    if(selected != null) {
+	        int index = model.getRowForModel(selected.getModel());
+	        tablePane.setRowSelectionInterval(index,index);
+        }
+    }
+    public void didRemove(DShape shape) {
+	    model.removeModel(shape.getModel());
+	    updateTableSelection(null);
+    }
+    public void clearTable() {
+	    updateTableSelection(null);
+	    model.clearTable();
+    }
+    public void didMoveToFront(DShape shape) {
+	    model.moveToFront(shape.getModel());
+	    updateTableSelection(shape);
+    }
+    public void didMoveToBack(DShape shape) {
+	    model.moveToBack(shape.getModel());
+	    updateTableSelection(shape);
+    }
+    public void addToTable(DShape shape) {
+	    model.addModel(shape.getModel());
+	    updateTableSelection(shape);
+    }
 	@Override 
 	public void modelChanged(DShapeModel model) {
 		

@@ -111,6 +111,10 @@ public abstract class DShapeModel {
 
 		}
 	}
+	public void markForRemoval() {
+		markedForRemoval = true;
+		notifyListeners();
+	}
 	public void modifyWithPoints(Point anchor, Point cursor) {
 		int x = (anchor.x < cursor.x ? anchor.x : cursor.x);
 		int y = (anchor.y < cursor.y ? anchor.y : cursor.y);
