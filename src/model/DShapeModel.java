@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.awt.Point;
 import java.util.Random;
 
+import model.TableModel;
+
 public abstract class DShapeModel {
 	ArrayList<ModelListener> list = new ArrayList<>();
 	protected int x1 = 0;
@@ -13,7 +15,6 @@ public abstract class DShapeModel {
 	protected int width = 0;
 	protected int height = 0;
 	protected Color shapeColor = Color.GRAY;
-	protected String text;
 
 	public DShapeModel() {
 		Random randGen = new Random();
