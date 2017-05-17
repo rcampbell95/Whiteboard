@@ -52,6 +52,7 @@ public class Canvas extends JPanel
 	private int lastY;
 	private Point movingPoint;
 	private Point anchorPoint;
+	JComboBox<String> comboBox;
 	
 
 
@@ -227,7 +228,7 @@ public class Canvas extends JPanel
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fonts = ge.getAvailableFontFamilyNames();
-		JComboBox<String> comboBox = new JComboBox<>(fonts);
+		comboBox = new JComboBox<>(fonts);
 		//comboBox.setBorder(new EmptyBorder(10, 10, 10, 10));
 		comboBox.setBackground(Color.WHITE);
 		text2.setFont(comboBox.getFont());
@@ -335,7 +336,8 @@ public class Canvas extends JPanel
 		{
 			shape = new DText(model);
 			//System.out.println(text2.getText());
-			model.setText(text2.getText());
+			((DTextModel)model).setText(text2.getText());
+			((DText)shape).setFont(comboBox.getSelectedItem().toString(), 1);
 			selected = shape;
 			shapes.add(shape);
 		}

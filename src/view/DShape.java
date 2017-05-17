@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import model.DShapeModel;
+import model.DTextModel;
 
 public abstract class DShape {
 	DShapeModel model;
@@ -64,10 +65,10 @@ public abstract class DShape {
 		return model.getColor();
 	}
 	public String getText() {
-		return model.getText();
+		return ((DTextModel)model).getText();
 	}
 	public void setText(String text) {
-		model.setText(text);
+		((DTextModel)model).setText(text);
 	}
 	public boolean containsPoint(Point point) {
 		Rectangle bounds = model.getBounds();
