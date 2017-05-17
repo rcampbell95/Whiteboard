@@ -27,6 +27,7 @@ public abstract class DShapeModel {
 		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		text = "";
+		
 	}
 
 

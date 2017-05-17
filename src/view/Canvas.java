@@ -49,6 +49,7 @@ public class Canvas extends JPanel implements ModelListener
 	DShape selected;
 	ArrayList<DShape> shapes;
 	JPanel east;
+	JTable tablePane = new JTable(model);
 	String textInput;
 	JTextField text2;
 	private int lastX;
@@ -92,6 +93,7 @@ public class Canvas extends JPanel implements ModelListener
 		addButtonPane2(west);
 		addButtonPane3(west);
 		addButtonPane4(west);
+		
 		addTablePane(west);
 		west.setBackground(Color.WHITE);
 		
@@ -154,6 +156,8 @@ public class Canvas extends JPanel implements ModelListener
 			{
 				DShapeModel model = new DRectModel();
 				addShape(model);
+				
+				
 			}
 
 		});
@@ -317,12 +321,16 @@ public class Canvas extends JPanel implements ModelListener
 		model = new TableModel();
 		
 		//model.setColumnIdentifiers(str);
-		JTable tablePane = new JTable(model);
+		tablePane = new JTable(model);
 
 		tablePane.setLayout(new BoxLayout(tablePane, BoxLayout.X_AXIS));
 
 		JTableHeader head = tablePane.getTableHeader();
 		head.setBackground(Color.GRAY);
+		head.setReorderingAllowed(false);
+		head.setResizingAllowed(false);
+		
+		tablePane.setTableHeader(head);
 		tablePane.setBackground(Color.WHITE);
 		tablePane.setVisible(true);
 		pan.add(new JScrollPane(tablePane));
@@ -364,6 +372,7 @@ public class Canvas extends JPanel implements ModelListener
 			shapes.add(shape);
 		}
 		model.addListener(this);
+		this.model.addModel(model);
 		repaintShape(shape);
 		
 		

@@ -11,10 +11,15 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 
 	public TableModel()
 	{
-		super();
-		
-		modelArray = new  ArrayList<DShapeModel>();
+		super();		
+		modelArray = new  ArrayList<DShapeModel>();		
 	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return COLUMN_HEADERS[column];
+	}
+	
 
 	public void addModel(DShapeModel model)
 	{
@@ -59,6 +64,21 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 	@Override
 	public Object getValueAt(int arg0, int arg1) {
 
+		 Rectangle bounds = modelArray.get(arg0).getBounds();
+	        switch (arg1) {
+	        case 0:
+	            return bounds.x;
+	        case 1:
+	            return bounds.y;
+	        case 2:
+	            return bounds.width;
+	        case 3:
+	            return bounds.height;
+	        case 4:
+	            return modelArray.get(arg0);
+	        default:
+	            return null;
+	        }
 
 		return null;
 	}
@@ -66,8 +86,15 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 	@Override
 	public void modelChanged(DShapeModel model) {
 
+		if(!modelArray.contains(model))
+		{
+			modelArray.add(0,model);
+		}
+		else{
+			
 		 int index = modelArray.indexOf(model);
 	     fireTableRowsUpdated(index, index);
+		}
 	}
 
 	public void moveToFront(DShapeModel model)
