@@ -7,7 +7,7 @@ import java.awt.Point;
 import java.util.Random;
 
 public abstract class DShapeModel {
-	ArrayList<ModelListener> list;
+	ArrayList<ModelListener> list = new ArrayList<>();
 	protected int x1 = 0;
 	protected int y1 = 0;
 	protected int width = 0;
@@ -21,7 +21,7 @@ public abstract class DShapeModel {
 		int UPPER_BOUND = 75;
 		int LOWER_BOUND = 25;
 		int CANVAS_SIZE = 400;
-		list = new ArrayList<ModelListener>();
+
 		x1 = randGen.nextInt(CANVAS_SIZE);
 		y1 = randGen.nextInt(CANVAS_SIZE);
 		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
@@ -57,6 +57,7 @@ public abstract class DShapeModel {
 	public void move(int x, int y) {
 		x1 += x;
 		y1 += y;
+		notifyListeners();
 	}
 	
 	public void notifyListeners() {
@@ -90,6 +91,7 @@ public abstract class DShapeModel {
 		y1 = y;
 		this.width = width;
 		this.height = height;
+		notifyListeners();
 	}
 	public String getText() {
 		return text;

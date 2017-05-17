@@ -41,10 +41,7 @@ import model.TableModel;
 public class Canvas extends JPanel implements ModelListener 
 {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	
 	TableModel model;
 	DShape selected;
 	ArrayList<DShape> shapes;
@@ -101,7 +98,6 @@ public class Canvas extends JPanel implements ModelListener
 
 		east.addMouseListener(new MouseAdapter()
 		{
-			@Override
 			public void mousePressed(MouseEvent e)
 			{
 				
@@ -309,9 +305,7 @@ public class Canvas extends JPanel implements ModelListener
 		repaintShape(object);
 	}
 
-	public void repaint(DShape object) {
-		repaint(object.getBounds());
-	}
+	
 
 
 	private void addTablePane(JPanel pan)
@@ -344,6 +338,7 @@ public class Canvas extends JPanel implements ModelListener
 		
 		if(selected != null) {
 			repaintShape(selected);
+			repaint();
 		}
 		DShape shape = null;
 		if (model instanceof DRectModel)
@@ -351,6 +346,7 @@ public class Canvas extends JPanel implements ModelListener
 			shape = new DRect(model, this);
 			selected = shape;
 			shapes.add(shape);
+			//model.setBounds(10, 10, 20, 30);
 
 		} else if (model instanceof DOvalModel)
 		{
@@ -374,7 +370,6 @@ public class Canvas extends JPanel implements ModelListener
 		model.addListener(this);
 		this.model.addModel(model);
 		repaintShape(shape);
-		
 		
 	}
 
@@ -410,7 +405,7 @@ public class Canvas extends JPanel implements ModelListener
 				}
 			}
 		} 
-		repaint();
+		east.repaint();
 	}
 	public void repaintArea(Rectangle bounds) {
 		east.repaint(bounds);
@@ -422,10 +417,11 @@ public class Canvas extends JPanel implements ModelListener
 	}
 	public void repaintShape(DShape shape) {
 		if(shape == selected) {
-			repaint(shape.getBigBounds());
+			east.repaint(shape.getBigBounds());
 			
 		} else {
-			repaint(shape.getBounds());
+			east.repaint(shape.getBounds());
+			
 		}
 	}
 	@Override 

@@ -3,6 +3,7 @@ package view;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+import model.DRectModel;
 import model.DShapeModel;
 
 public class DRect extends DShape {
@@ -22,6 +23,10 @@ public class DRect extends DShape {
 		if(selected) {
 			drawKnobs(g);
 		}
+	}
+	@Override
+	public DRectModel getModel() {
+		return (DRectModel) model;
 	}
 
 }
