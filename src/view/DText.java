@@ -4,14 +4,15 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import model.DShapeModel;
 import model.DTextModel;
 
 public class DText extends DShape {
 
-	public DText(DShapeModel model) {
-		super(model);
+	public DText(DShapeModel model, Canvas canvas) {
+		super(model, canvas);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -49,5 +50,9 @@ public class DText extends DShape {
 	
 	public void setFont(String name, int size) {
 		((DTextModel)model).setFont(name, size);
+	}
+	@Override
+	public DTextModel getModel() {
+		return (DTextModel)model;
 	}
 }

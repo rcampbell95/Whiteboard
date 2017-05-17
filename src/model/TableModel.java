@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.sun.javafx.geom.Rectangle;
+
 public class TableModel extends AbstractTableModel implements ModelListener{
 
 	ArrayList<DShapeModel> modelArray;
@@ -11,10 +13,15 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 
 	public TableModel()
 	{
-		super();
-		
-		modelArray = new  ArrayList<DShapeModel>();
+		super();		
+		modelArray = new  ArrayList<DShapeModel>();		
 	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return COLUMN_HEADERS[column];
+	}
+	
 
 	public void addModel(DShapeModel model)
 	{
@@ -58,16 +65,37 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 
 	@Override
 	public Object getValueAt(int arg0, int arg1) {
+		
+		
+		switch (arg1) {
+        case 0:
+            return modelArray.get(arg0).getBounds().getX();
+        case 1:
+            return modelArray.get(arg0).getBounds().getY();
+        case 2:
+            return modelArray.get(arg0).getBounds().getWidth();
+        case 3:
+            return modelArray.get(arg0).getBounds().getHeight();
+        case 4:
+            return modelArray.get(arg0);
+        default:
+            return null;}
 
-
-		return null;
+		
 	}
 
 	@Override
 	public void modelChanged(DShapeModel model) {
 
+		if(!modelArray.contains(model))
+		{
+			modelArray.add(0,model);
+		}
+		else{
+			
 		 int index = modelArray.indexOf(model);
 	     fireTableRowsUpdated(index, index);
+		}
 	}
 
 	public void moveToFront(DShapeModel model)

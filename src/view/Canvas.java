@@ -7,10 +7,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -34,8 +36,33 @@ import model.DRectModel;
 import model.DShapeModel;
 import model.DTextModel;
 import model.TableModel;
+import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-public class Canvas extends JPanel
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.JTableHeader;
+
+import model.DLineModel;
+import model.DOvalModel;
+import model.DRectModel;
+import model.DShapeModel;
+import model.DTextModel;
+import model.ModelListener;
+import model.TableModel;
+
+public class Canvas extends JPanel implements ModelListener 
 {
 
 	/**
@@ -46,6 +73,7 @@ public class Canvas extends JPanel
 	DShape selected;
 	ArrayList<DShape> shapes;
 	JPanel east;
+	JTable tablePane = new JTable(model);
 	String textInput;
 	JTextField text2;
 	private int lastX;
@@ -64,6 +92,8 @@ public class Canvas extends JPanel
 		this.setSize(400, 400);
 		this.setBackground(Color.WHITE);
 		JPanel west = new JPanel();
+		selected = null;
+		movingPoint = null;
 		east = new JPanel()
 		{
 			/**
@@ -78,7 +108,8 @@ public class Canvas extends JPanel
 				for (Iterator<DShape> i = shapes.iterator(); i.hasNext(); )
 				{
 					DShape shape = i.next();
-					shape.draw(g, (selected == shape));
+
+					shape.draw(g,(selected == shape));
 				}
 			}
 		};
@@ -88,22 +119,36 @@ public class Canvas extends JPanel
 		addButtonPane2(west);
 		addButtonPane3(west);
 		addButtonPane4(west);
+		
 		addTablePane(west);
 		west.setBackground(Color.WHITE);
+		
+		
 
 		east.addMouseListener(new MouseAdapter()
 		{
-			@Override
 			public void mousePressed(MouseEvent e)
 			{
-				int x = e.getX();
-				int y = e.getY();
-				System.out.println(x + "    " + y);
+				
 				selectObjectForClick(e.getPoint());
 			}
 
 		});
-		
+		east.addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				int dx = e.getX() - lastX;
+				int dy = e.getY() - lastY;
+				lastX = e.getX();
+				lastY = e.getY();
+				if(movingPoint != null) {
+					movingPoint.x += dx;
+					movingPoint.y += dy;
+					selected.modifyShapeWithPoints(anchorPoint, movingPoint);
+				} else if(selected != null) {
+					selected.move(dx,dy);
+				}
+			}
+		});
 		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
 		JButton b = new JButton("b");
 		b.setVisible(false);
@@ -136,6 +181,8 @@ public class Canvas extends JPanel
 			{
 				DShapeModel model = new DRectModel();
 				addShape(model);
+				
+				
 			}
 
 		});
@@ -207,7 +254,7 @@ public class Canvas extends JPanel
 						if(color != null && !color.equals(selected.getColor())) {
 							setSelectedColor(color);
 						}
-						east.repaint();
+						repaint();
 					}
 				}
 			}
@@ -261,10 +308,20 @@ public class Canvas extends JPanel
 			 @Override
 			 public void actionPerformed(ActionEvent e)
 			 {
-			 	moveToBack(selected);
+			 	moveToBack(selected);			 	
 			 }
 		 });
+		
 		 JButton removeShape = new JButton("Remove Shape");
+		 removeShape.addActionListener(new ActionListener()
+		 {
+			 @Override
+			 public void actionPerformed(ActionEvent e)
+			 {
+			 	removeShape(selected);
+			 	
+			 }
+		 });
 		 buttonPane4.add(moveToFront);
 		 buttonPane4.add(moveToBack);
 		 buttonPane4.add(removeShape);
@@ -277,34 +334,36 @@ public class Canvas extends JPanel
 		if(!shapes.isEmpty() && shapes.remove(object)) {
 			shapes.add(object);
 		}
-		repaint(object);
+		repaintShape(object);
 	}
 
 	public void moveToBack(DShape object) {
 		if (!shapes.isEmpty() && shapes.remove(object)){
 			shapes.add(0,object);
 		}
-		repaint(object);
+		repaintShape(object);
 	}
 
-	public void repaint(DShape object) {
-		repaint(object.getBounds());
-	}
+	
 
 
 	private void addTablePane(JPanel pan)
 	{
 
-		String[] str = {"X", "Y", "Width", "Height"};
+		
 		model = new TableModel();
 		
 		//model.setColumnIdentifiers(str);
-		JTable tablePane = new JTable(model);
+		tablePane = new JTable(model);
 
 		tablePane.setLayout(new BoxLayout(tablePane, BoxLayout.X_AXIS));
 
 		JTableHeader head = tablePane.getTableHeader();
 		head.setBackground(Color.GRAY);
+		head.setReorderingAllowed(false);
+		head.setResizingAllowed(false);
+		
+		tablePane.setTableHeader(head);
 		tablePane.setBackground(Color.WHITE);
 		tablePane.setVisible(true);
 		pan.add(new JScrollPane(tablePane));
@@ -314,34 +373,44 @@ public class Canvas extends JPanel
 	private void addShape(DShapeModel model)
 	{
 		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
-		DShape shape;
+		
+		
+		if(selected != null) {
+			repaintShape(selected);
+			repaint();
+		}
+		DShape shape = null;
 		if (model instanceof DRectModel)
 		{
-			shape = new DRect(model);
+			shape = new DRect(model, this);
 			selected = shape;
 			shapes.add(shape);
+			//model.setBounds(10, 10, 20, 30);
 
 		} else if (model instanceof DOvalModel)
 		{
-			shape = new DOval(model);
+			shape = new DOval(model, this);
 			selected = shape;
 			shapes.add(shape);
 
 		} else if (model instanceof DLineModel)
 		{
-			shape = new DLine(model);
+			shape = new DLine(model,this);
 			selected = shape;
 			shapes.add(shape);
 		} else if (model instanceof DTextModel)
 		{
-			shape = new DText(model);
+			shape = new DText(model,this);
 			//System.out.println(text2.getText());
 			((DTextModel)model).setText(text2.getText());
 			((DText)shape).setFont(comboBox.getSelectedItem().toString(), 1);
 			selected = shape;
 			shapes.add(shape);
 		}
-		east.repaint();
+		model.addListener(this);
+		this.model.addModel(model);
+		repaintShape(shape);
+		
 	}
 
 	public void setSelectedColor(Color c) {
@@ -376,6 +445,27 @@ public class Canvas extends JPanel
 				}
 			}
 		} 
-		repaint();
+		east.repaint();
+	}
+	public void repaintArea(Rectangle bounds) {
+		east.repaint(bounds);
+		
+	}
+	public void removeShape(DShape shape) {
+		shapes.remove(shape);
+		repaintArea(shape.getBigBounds());
+	}
+	public void repaintShape(DShape shape) {
+		if(shape == selected) {
+			east.repaint(shape.getBigBounds());
+			
+		} else {
+			east.repaint(shape.getBounds());
+			
+		}
+	}
+	@Override 
+	public void modelChanged(DShapeModel model) {
+		
 	}
 }

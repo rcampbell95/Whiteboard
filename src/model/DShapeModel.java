@@ -15,6 +15,9 @@ public abstract class DShapeModel {
 	protected int width = 0;
 	protected int height = 0;
 	protected Color shapeColor = Color.GRAY;
+	protected String text;
+	private boolean markedForRemoval;
+
 
 	public DShapeModel() {
 		Random randGen = new Random();
@@ -51,6 +54,18 @@ public abstract class DShapeModel {
 	public void setColor(Color shapeColor) {
 		this.shapeColor = shapeColor;
 	}
+	
+	public void move(int x, int y) {
+		x1 += x;
+		y1 += y;
+		notifyListeners();
+	}
+	
+	public void notifyListeners() {
+		for(ModelListener listener: list) {
+			listener.modelChanged(this);
+		}
+	}
 
 	public int getX() {
 		return this.x1;
@@ -77,6 +92,7 @@ public abstract class DShapeModel {
 		y1 = y;
 		this.width = width;
 		this.height = height;
+		notifyListeners();
 	}
 
 	public void addTableListener(TableModel tableModel) {
@@ -96,5 +112,8 @@ public abstract class DShapeModel {
 		int width = Math.abs(anchor.x - cursor.x);
 		int height = Math.abs(anchor.y - cursor.y);
 		setBounds(x,y,width,height);
+	}
+	public boolean markedForRemoval() {
+		return markedForRemoval;
 	}
 }

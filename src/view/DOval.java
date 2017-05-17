@@ -2,12 +2,15 @@ package view;
 
 import java.awt.Graphics;
 
+import java.awt.Rectangle;
+
+import model.DOvalModel;
 import model.DShapeModel;
 
 public class DOval extends DShape {
 
-	public DOval(DShapeModel model) {
-		super(model);
+	public DOval(DShapeModel model, Canvas canvas) {
+		super(model, canvas);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -19,6 +22,11 @@ public class DOval extends DShape {
 		if(selected) {
 			drawKnobs(g);
 		}
+		
+	}
+	@Override
+	public DOvalModel getModel() {
+		return (DOvalModel) model;
 	}
 
 }
