@@ -279,10 +279,20 @@ public class Canvas extends JPanel implements ModelListener
 			 @Override
 			 public void actionPerformed(ActionEvent e)
 			 {
-			 	moveToBack(selected);
+			 	moveToBack(selected);			 	
 			 }
 		 });
+		
 		 JButton removeShape = new JButton("Remove Shape");
+		 removeShape.addActionListener(new ActionListener()
+		 {
+			 @Override
+			 public void actionPerformed(ActionEvent e)
+			 {
+			 	removeShape(selected);
+			 	
+			 }
+		 });
 		 buttonPane4.add(moveToFront);
 		 buttonPane4.add(moveToBack);
 		 buttonPane4.add(removeShape);
