@@ -3,6 +3,7 @@ package view;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+import model.DOvalModel;
 import model.DShapeModel;
 
 public class DOval extends DShape {
@@ -21,6 +22,10 @@ public class DOval extends DShape {
 			drawKnobs(g);
 		}
 		
+	}
+	@Override
+	public DOvalModel getModel() {
+		return (DOvalModel) model;
 	}
 
 }
