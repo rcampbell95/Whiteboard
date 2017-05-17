@@ -41,6 +41,14 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 		fireTableDataChanged();
 
 	}
+	public void removeModel2(int x)
+	{
+		if((x < modelArray.size()) && x >=0)
+		{
+		modelArray.remove(modelArray.get(x));
+		fireTableDataChanged();
+		}
+	}
 
 	public void clearTable()
 	{

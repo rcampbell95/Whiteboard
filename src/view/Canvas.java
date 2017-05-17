@@ -167,6 +167,7 @@ public class Canvas extends JPanel implements ModelListener
 			{
 				DShapeModel model = new DOvalModel();
 				addShape(model);
+				
 			}
 		});
 
@@ -289,8 +290,11 @@ public class Canvas extends JPanel implements ModelListener
 			 @Override
 			 public void actionPerformed(ActionEvent e)
 			 {
+				if(selected != null)
+				{
+			 	model.removeModel2(shapes.indexOf(selected));
 			 	removeShape(selected);
-			 	
+				}
 			 }
 		 });
 		 buttonPane4.add(moveToFront);
@@ -303,14 +307,15 @@ public class Canvas extends JPanel implements ModelListener
 
 	public void moveToFront(DShape object) {
 		if(!shapes.isEmpty() && shapes.remove(object)) {
-			shapes.add(object);
+			shapes.add(0,object);
+			
 		}
 		repaintShape(object);
 	}
 
 	public void moveToBack(DShape object) {
 		if (!shapes.isEmpty() && shapes.remove(object)){
-			shapes.add(0,object);
+			shapes.add(object);
 		}
 		repaintShape(object);
 	}
@@ -323,12 +328,8 @@ public class Canvas extends JPanel implements ModelListener
 
 		
 		model = new TableModel();
-		
-		//model.setColumnIdentifiers(str);
 		tablePane = new JTable(model);
-
 		tablePane.setLayout(new BoxLayout(tablePane, BoxLayout.X_AXIS));
-
 		JTableHeader head = tablePane.getTableHeader();
 		head.setBackground(Color.GRAY);
 		head.setReorderingAllowed(false);
