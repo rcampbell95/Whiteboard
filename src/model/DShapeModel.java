@@ -22,10 +22,10 @@ public abstract class DShapeModel {
 		int LOWER_BOUND = 25;
 		int CANVAS_SIZE = 400;
 
-		x1 = randGen.nextInt(CANVAS_SIZE);
-		y1 = randGen.nextInt(CANVAS_SIZE);
 		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
 		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+		x1 = randGen.nextInt(CANVAS_SIZE - width);
+		y1 = randGen.nextInt(CANVAS_SIZE - height);
 		text = "";
 		
 	}

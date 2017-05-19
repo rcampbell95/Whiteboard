@@ -46,6 +46,7 @@ public class Canvas extends JPanel implements ModelListener
 	DShape selected;
 	ArrayList<DShape> shapes;
 	JPanel east;
+	JPanel west;
 	JTable tablePane = new JTable(model);
 	String textInput;
 	JTextField text2;
@@ -63,9 +64,10 @@ public class Canvas extends JPanel implements ModelListener
 		this.setLayout(new BorderLayout());
 		this.setSize(400, 400);
 		this.setBackground(Color.WHITE);
-		JPanel west = new JPanel();
+		west = new JPanel();
 		selected = null;
 		movingPoint = null;
+		
 		east = new JPanel()
 		{
 			/**
@@ -84,7 +86,7 @@ public class Canvas extends JPanel implements ModelListener
 				}
 			}
 		};
-
+		east.setSize(400,400);
 		west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
 		addButtonPane1(west);
 		addButtonPane2(west);
