@@ -113,6 +113,10 @@ public abstract class DShape implements ModelListener {
 		needsRecomputeKnobs = true;
 		model.modifyWithPoints(anchor, cursor);
 	}
+
+	public void markForRemoval() {
+		model.markForRemoval();
+	}
 	
 	@Override
 	public void modelChanged(DShapeModel model) {

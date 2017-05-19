@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 import com.sun.javafx.geom.Rectangle;
+import view.DShape;
 
 public class TableModel extends AbstractTableModel implements ModelListener{
 
@@ -14,7 +15,7 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 	public TableModel()
 	{
 		super();		
-		modelArray = new  ArrayList<DShapeModel>();		
+		modelArray = new  ArrayList<>();
 	}
 	
 	@Override
@@ -25,32 +26,31 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 
 	public void addModel(DShapeModel model)
 	{
-		this.modelArray.add(0, model);
-		model.addTableListener(this);
+		modelArray.add(0, model);
+		model.addListener(this);
 		fireTableDataChanged();
 
 	}
 
-	public void removeModel(DShapeModel model)
-	{
-		if(this.modelArray.contains(model))
-		{
-			model.removeTableListener(this);
-			this.modelArray.remove(model);
-		}
-		fireTableDataChanged();
+	public void removeModel(DShapeModel model) {
+        model.removeListener(this);
+        modelArray.remove(model);
+        fireTableDataChanged();
 
-	}
+    }
 
 	public void clearTable()
 	{
 		if(!(modelArray.isEmpty()))
 		{
-			this.modelArray.clear();
+			modelArray.clear();
 			fireTableDataChanged();
 		}
 	}
 
+	public int getRowForModel(DShapeModel model) {
+	    return modelArray.indexOf(model);
+    }
 
 	@Override
 	public int getColumnCount() {
@@ -92,7 +92,7 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 			modelArray.add(0,model);
 		}
 		else{
-			
+
 		 int index = modelArray.indexOf(model);
 	     fireTableRowsUpdated(index, index);
 		}

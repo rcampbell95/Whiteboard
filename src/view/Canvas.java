@@ -42,20 +42,14 @@ import model.TableModel;
 import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.awt.image.BufferedImage;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.JTableHeader;
 
@@ -78,7 +72,9 @@ public class Canvas extends JPanel implements ModelListener
 	DShape selected;
 	ArrayList<DShape> shapes;
 	JPanel east;
+	JPanel west;
 	JTable tablePane = new JTable(model);
+	JFileChooser fileChooser;
 	String textInput;
 	JFormattedTextField text2;
 	private int lastX;
@@ -93,12 +89,14 @@ public class Canvas extends JPanel implements ModelListener
 	{
 		shapes = new ArrayList<DShape>();
 
+		fileChooser = new JFileChooser();
 		this.setLayout(new BorderLayout());
 		this.setSize(400, 400);
 		this.setBackground(Color.WHITE);
-		JPanel west = new JPanel();
+		west = new JPanel();
 		selected = null;
 		movingPoint = null;
+		
 		east = new JPanel()
 		{
 			/**
@@ -118,13 +116,14 @@ public class Canvas extends JPanel implements ModelListener
 				}
 			}
 		};
-
+		west.setSize(400,400);
 		west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
 		addButtonPane1(west);
 		addButtonPane2(west);
 		addButtonPane3(west);
 		addButtonPane4(west);
-		
+		addButtonPane5(west);
+
 		addTablePane(west);
 		west.setBackground(Color.WHITE);
 		
@@ -201,6 +200,7 @@ public class Canvas extends JPanel implements ModelListener
 			{
 				DShapeModel model = new DOvalModel();
 				addShape(model);
+				
 			}
 		});
 
@@ -327,7 +327,7 @@ public class Canvas extends JPanel implements ModelListener
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				moveToFront(selected);
+				moveSelectedToFront();
 			}
 		});
 		JButton moveToBack = new JButton("Move to Back");
@@ -336,7 +336,7 @@ public class Canvas extends JPanel implements ModelListener
 			 @Override
 			 public void actionPerformed(ActionEvent e)
 			 {
-			 	moveToBack(selected);			 	
+			 	moveSelectedToBack();
 			 }
 		 });
 		
@@ -346,8 +346,11 @@ public class Canvas extends JPanel implements ModelListener
 			 @Override
 			 public void actionPerformed(ActionEvent e)
 			 {
-			 	removeShape(selected);
-			 	
+				if(selected != null)
+				{
+
+			 	markSelectedShapeForRemoval();
+				}
 			 }
 		 });
 		 buttonPane4.add(moveToFront);
@@ -358,16 +361,76 @@ public class Canvas extends JPanel implements ModelListener
 		 pan.add(buttonPane4);
 	}
 
+	private void addButtonPane5(JPanel pan) {
+		JPanel buttonPane5 = new JPanel();
+		buttonPane5.setLayout(new BoxLayout(buttonPane5, BoxLayout.X_AXIS));
+		JButton saveCanvas = new JButton("Save Canvas");
+		saveCanvas.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveCanvas();
+			}
+		});
+		JButton saveImage = new JButton("Save Image");
+		saveImage.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveImage();
+			}
+		});
+		buttonPane5.add(saveCanvas);
+		buttonPane5.add(saveImage);
+		buttonPane5.setBorder(new EmptyBorder(10,10,10,10));
+		buttonPane5.setBackground(Color.WHITE);
+		pan.add(buttonPane5);
+	}
+	private void saveCanvas() {
+		int retVal = fileChooser.showSaveDialog(this);
+		if(retVal == JFileChooser.APPROVE_OPTION) {
+			this.saveCanvas(fileChooser.getSelectedFile());
+		}
+	}
+	public void saveCanvas(File file) {
+		try {
+			XMLEncoder xmlOut = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
+			DShapeModel[] shapeModels = getShapeModels().toArray(new DShapeModel[0]);
+			xmlOut.writeObject(shapeModels);
+			xmlOut.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void moveSelectedToFront() {
+	    moveToFront(selected);
+    }
+
+
+    public void markSelectedShapeForRemoval() {
+	    markForRemoval(selected);
+	    selected = null;
+    }
+    public void markForRemoval(DShape shape) {
+        shape.getModel().removeListener(this);
+        shape.markForRemoval();
+	}
 	public void moveToFront(DShape object) {
+	    didMoveToFront(object);
 		if(!shapes.isEmpty() && shapes.remove(object)) {
 			shapes.add(object);
+			
 		}
 		repaintShape(object);
 	}
 
+	public void moveSelectedToBack() {
+	    moveToBack(selected);
+    }
+
 	public void moveToBack(DShape object) {
+	    didMoveToBack(object);
 		if (!shapes.isEmpty() && shapes.remove(object)){
-			shapes.add(0,object);
+			shapes.add(0, object);
 		}
 		repaintShape(object);
 	}
@@ -380,12 +443,8 @@ public class Canvas extends JPanel implements ModelListener
 
 		
 		model = new TableModel();
-		
-		//model.setColumnIdentifiers(str);
 		tablePane = new JTable(model);
-
 		tablePane.setLayout(new BoxLayout(tablePane, BoxLayout.X_AXIS));
-
 		JTableHeader head = tablePane.getTableHeader();
 		head.setBackground(Color.GRAY);
 		head.setReorderingAllowed(false);
@@ -434,7 +493,7 @@ public class Canvas extends JPanel implements ModelListener
 			shapes.add(shape);
 		}
 		model.addListener(this);
-		this.model.addModel(model);
+		addToTable(shape);
 		repaintShape(shape);
 		
 	}
@@ -470,7 +529,8 @@ public class Canvas extends JPanel implements ModelListener
 					selected = shape;
 				}
 			}
-		} 
+		}
+		updateTableSelection(selected);
 		east.repaint();
 	}
 	public void repaintArea(Rectangle bounds) {
@@ -479,6 +539,7 @@ public class Canvas extends JPanel implements ModelListener
 	}
 	public void removeShape(DShape shape) {
 		shapes.remove(shape);
+		didRemove(shape);
 		repaintArea(shape.getBigBounds());
 	}
 	public void repaintShape(DShape shape) {
@@ -490,7 +551,92 @@ public class Canvas extends JPanel implements ModelListener
 			
 		}
 	}
-	@Override 
+
+	public void updateTableSelection(DShape selected) {
+	    tablePane.clearSelection();
+	    if(selected != null) {
+	        int index = model.getRowForModel(selected.getModel());
+	        tablePane.setRowSelectionInterval(index,index);
+        }
+    }
+    public void didRemove(DShape shape) {
+	    model.removeModel(shape.getModel());
+	    updateTableSelection(null);
+    }
+    public void clearTable() {
+	    updateTableSelection(null);
+	    model.clearTable();
+    }
+    public void didMoveToFront(DShape shape) {
+	    model.moveToFront(shape.getModel());
+	    updateTableSelection(shape);
+    }
+    public void didMoveToBack(DShape shape) {
+	    model.moveToBack(shape.getModel());
+	    updateTableSelection(shape);
+    }
+    public void addToTable(DShape shape) {
+	    model.addModel(shape.getModel());
+	    updateTableSelection(shape);
+    }
+    public ArrayList<DShape> getShapes() {
+		return shapes;
+	}
+	public void saveImage() {
+		int retVal = fileChooser.showSaveDialog(this);
+		if(retVal == JFileChooser.APPROVE_OPTION) {
+			saveImage(fileChooser.getSelectedFile());
+		}
+	}
+	public void saveImage(File file) {
+		DShape wasSelected = selected;
+		selected = null;
+		BufferedImage image = (BufferedImage) createImage(this.getWidth(),this.getHeight());
+		Graphics g = image.getGraphics();
+		paintAll(g);
+		g.dispose();
+		try {
+			javax.imageio.ImageIO.write(image, "PNG", file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		selected = wasSelected;
+	}
+
+	public void openCanvas() {
+		int retVal = fileChooser.showOpenDialog(this);
+		if(retVal == JFileChooser.APPROVE_OPTION) {
+			openCanvas(fileChooser.getSelectedFile());
+		}
+	}
+	public void openCanvas(File file) {
+		markAllForRemoval();
+		try {
+			XMLDecoder xmlIn = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)));
+			DShapeModel[] shapeModels = (DShapeModel[]) xmlIn.readObject();
+			xmlIn.close();
+			for(DShapeModel shapeModel: shapeModels) {
+				addShape(shapeModel);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void markAllForRemoval() {
+		selected = null;
+		for(int i = shapes.size() - 1;i>=0;i--) {
+			markForRemoval(shapes.get(i));
+		}
+	}
+	public ArrayList<DShapeModel> getShapeModels() {
+		ArrayList<DShapeModel> models = new ArrayList<>();
+		for(DShape shape : shapes) {
+			models.add(shape.getModel());
+		}
+		return models;
+	}
+	@Override
 	public void modelChanged(DShapeModel model) {
 		validate();
 		repaint();

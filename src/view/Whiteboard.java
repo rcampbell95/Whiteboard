@@ -1,15 +1,28 @@
 package view;
 
+import model.DShapeModel;
+
 import java.awt.BorderLayout;
-import javax.swing.JFrame;
+import java.beans.XMLEncoder;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.swing.*;
 
 public class Whiteboard extends JFrame {
+	Canvas canvas;
+	JFileChooser fileChooser;
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private ArrayList<ObjectOutputStream> outputs = new ArrayList<>();
 	public static void main(String[] args) {
 		
 		Whiteboard whiteboard = new Whiteboard();
@@ -19,11 +32,10 @@ public class Whiteboard extends JFrame {
 		whiteboard.setLayout(new BorderLayout());
 		whiteboard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		whiteboard.setTitle("Whiteboard");
-		Canvas canvas = new Canvas();
-		whiteboard.add(canvas, BorderLayout.CENTER);
-		canvas.setVisible(true);		
+		whiteboard.canvas = new Canvas();
+		whiteboard.add(whiteboard.canvas, BorderLayout.CENTER);
+		whiteboard.canvas.setVisible(true);
 		whiteboard.setVisible(true);
 		
 	}
-
 }
