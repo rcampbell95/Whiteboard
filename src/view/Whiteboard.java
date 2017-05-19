@@ -1,14 +1,22 @@
 package view;
 
+import model.DShapeModel;
+
 import java.awt.BorderLayout;
+import java.beans.XMLEncoder;
+import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import javax.swing.JFrame;
+import java.util.Iterator;
+import javax.swing.*;
 
 public class Whiteboard extends JFrame {
 	Canvas canvas;
+	JFileChooser fileChooser;
+
 	private ArrayList<ObjectOutputStream> outputs = new ArrayList<>();
 	public static void main(String[] args) {
 		
