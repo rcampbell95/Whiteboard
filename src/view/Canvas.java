@@ -10,6 +10,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -22,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,6 +40,8 @@ import model.DShapeModel;
 import model.DTextModel;
 import model.TableModel;
 import java.awt.event.MouseMotionAdapter;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -75,7 +80,7 @@ public class Canvas extends JPanel implements ModelListener
 	JPanel east;
 	JTable tablePane = new JTable(model);
 	String textInput;
-	JTextField text2;
+	JFormattedTextField text2;
 	private int lastX;
 	private int lastY;
 	private Point movingPoint;
@@ -254,7 +259,7 @@ public class Canvas extends JPanel implements ModelListener
 						if(color != null && !color.equals(selected.getColor())) {
 							setSelectedColor(color);
 						}
-						repaint();
+						modelChanged(selected.model);
 					}
 				}
 			}
@@ -270,12 +275,35 @@ public class Canvas extends JPanel implements ModelListener
 	{
 		JPanel buttonPane3 = new JPanel();
 		buttonPane3.setLayout(new BoxLayout(buttonPane3, BoxLayout.X_AXIS));
-		text2 = new JTextField("Whiteboard!");
+		text2 = new JFormattedTextField("Whiteboard!");
+		text2.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if(selected instanceof DText) {
+					selected.setText((String)event.getNewValue());
+					modelChanged(selected.model);
+				}
+			}
+			
+		});
 		text2.setMaximumSize(new Dimension(300,40));
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fonts = ge.getAvailableFontFamilyNames();
 		comboBox = new JComboBox<>(fonts);
+		
+		comboBox.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+			// TODO Auto-generated method stub
+				if(selected instanceof DText) {
+					((DText) selected).setFont(comboBox.getSelectedItem().toString(), 1);
+					modelChanged(selected.model);
+				}
+			}
+			
+		});
 		//comboBox.setBorder(new EmptyBorder(10, 10, 10, 10));
 		comboBox.setBackground(Color.WHITE);
 		text2.setFont(comboBox.getFont());
@@ -371,9 +399,7 @@ public class Canvas extends JPanel implements ModelListener
 
 
 	private void addShape(DShapeModel model)
-	{
-		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
-		
+	{		
 		
 		if(selected != null) {
 			repaintShape(selected);
@@ -466,6 +492,7 @@ public class Canvas extends JPanel implements ModelListener
 	}
 	@Override 
 	public void modelChanged(DShapeModel model) {
-		
+		validate();
+		repaint();
 	}
 }
