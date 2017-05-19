@@ -5,6 +5,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 
 import model.DShapeModel;
 import model.DTextModel;
@@ -25,7 +26,18 @@ public class DText extends DShape {
 		
 		computeFont(g);
 		g2.setFont(textModel.getFont());
-		g2.drawString(textModel.getText(),model.getX(),model.getY());
+		// Get clip for drawing within the rectangle bounds
+		Shape clip = g.getClip();
+		// Intersect the clip with the text shape bounds.
+		// i.e. we won't lay down any pixels that fall outside our                    
+		//bounds
+		g.setClip(clip.getBounds().createIntersection(getBounds()));
+		// Restore the old clip
+
+
+		g2.drawString(textModel.getText(),model.getX(),model.getY() + model.getHeight());
+		g.setClip(clip);
+		
 		if(selected) {
 			drawKnobs(g);
 		}
@@ -37,6 +49,8 @@ public class DText extends DShape {
 		
 		String fontName = textModel.getFont().getFontName();
 		FontMetrics fontSize = g.getFontMetrics(textModel.getFont());
+		
+		textModel.setFont(fontName, size);
 		
 		
 		while(fontSize.getHeight() <= textModel.getHeight()) {
