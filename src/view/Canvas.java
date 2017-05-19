@@ -484,7 +484,10 @@ public class Canvas extends JPanel implements ModelListener
 	    model.addModel(shape.getModel());
 	    updateTableSelection(shape);
     }
-	@Override 
+    public ArrayList<DShape> getShapes() {
+		return shapes;
+	}
+	@Override
 	public void modelChanged(DShapeModel model) {
 		
 	}

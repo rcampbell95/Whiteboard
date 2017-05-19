@@ -1,10 +1,15 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 
 public class Whiteboard extends JFrame {
-
+	Canvas canvas;
+	private ArrayList<ObjectOutputStream> outputs = new ArrayList<>();
 	public static void main(String[] args) {
 		
 		Whiteboard whiteboard = new Whiteboard();
@@ -14,11 +19,10 @@ public class Whiteboard extends JFrame {
 		whiteboard.setLayout(new BorderLayout());
 		whiteboard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		whiteboard.setTitle("Whiteboard");
-		Canvas canvas = new Canvas();
-		whiteboard.add(canvas, BorderLayout.CENTER);
-		canvas.setVisible(true);		
+		whiteboard.canvas = new Canvas();
+		whiteboard.add(whiteboard.canvas, BorderLayout.CENTER);
+		whiteboard.canvas.setVisible(true);
 		whiteboard.setVisible(true);
 		
 	}
-
 }

@@ -15,7 +15,7 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 	public TableModel()
 	{
 		super();		
-		modelArray = new  ArrayList<DShapeModel>();		
+		modelArray = new  ArrayList<>();
 	}
 	
 	@Override
