@@ -20,17 +20,17 @@ public class DText extends DShape {
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setPaint(model.getColor());
 		Rectangle bounds = model.getBounds();
-		g2.drawString(model.getText(),bounds.x,bounds.y);
+		//g2.drawString(model.getText(),bounds.x,bounds.y);
 		if(selected) {
 			drawKnobs(g);
 		}
 	}
 
 	public String getText() {
-		return model.getText();
+		return getModel().getText();
 	}
 	public void setText(String text) {
-		model.setText(text);
+		getModel().setText(text);
 	}
 	@Override
 	public DTextModel getModel() {

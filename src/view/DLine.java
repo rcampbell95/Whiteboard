@@ -15,7 +15,7 @@ public class DLine extends DShape {
 	@Override
 	public void draw(Graphics g, boolean selected) {
 		DLineModel lineM = getModel();
-		g.setColor(model.getColor());
+		g.setColor(getColor());
 		g.drawLine(lineM.getPoint1().x, lineM.getPoint1().y,lineM.getPoint2().x,lineM.getPoint2().y);
 		if(selected) {
 			drawKnobs(g);
@@ -30,7 +30,7 @@ public class DLine extends DShape {
 	@Override
 	public ArrayList<Point> getKnobs() {
 		if(knobs == null || needsRecomputeKnobs) {
-			knobs = new ArrayList<Point>();
+			knobs = new ArrayList<>();
 			DLineModel lineM = (DLineModel) model;
 			knobs.add(new Point(lineM.getPoint1()));
 			knobs.add(new Point(lineM.getPoint2()));

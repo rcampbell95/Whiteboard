@@ -87,12 +87,7 @@ public abstract class DShape implements ModelListener {
 	public Color getColor() {
 		return model.getColor();
 	}
-	public String getText() {
-		return model.getText();
-	}
-	public void setText(String text) {
-		model.setText(text);
-	}
+
 	public boolean containsPoint(Point point) {
 		Rectangle bounds = model.getBounds();
 		

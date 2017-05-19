@@ -1,5 +1,7 @@
 package model;
 
+import org.w3c.dom.css.Rect;
+
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -8,28 +10,34 @@ import java.util.Random;
 
 public abstract class DShapeModel {
 	ArrayList<ModelListener> list = new ArrayList<>();
-	protected int x1 = 0;
-	protected int y1 = 0;
-	protected int width = 0;
-	protected int height = 0;
-	protected Color shapeColor = Color.GRAY;
-	protected String text;
+	int UPPER_BOUND = 75;
+	int LOWER_BOUND = 25;
+	int CANVAS_SIZE = 400;
+
+	protected Random randGen = new Random();
+	protected int width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+	protected int height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+	protected int x1 = randGen.nextInt(CANVAS_SIZE - width);
+	protected int y1 = randGen.nextInt(CANVAS_SIZE - height);
+
+	protected Color shapeColor;
+	private Rectangle bounds;
+	private int ID;
 	private boolean markedForRemoval;
 
 	public DShapeModel() {
-		Random randGen = new Random();
-		int UPPER_BOUND = 75;
-		int LOWER_BOUND = 25;
-		int CANVAS_SIZE = 400;
-
-		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
-		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
-		x1 = randGen.nextInt(CANVAS_SIZE - width);
-		y1 = randGen.nextInt(CANVAS_SIZE - height);
-		text = "";
-		
+		this(0,0);
 	}
 
+	public DShapeModel(int x, int y) {
+		this(x,y,0,0,Color.GRAY);
+	}
+	public DShapeModel(int x, int y, int width, int height, Color color) {
+		bounds = new Rectangle(x,y,width,height);
+		shapeColor = color;
+		list = new ArrayList<>();
+		markedForRemoval = false;
+	}
 
 	public void addListener(ModelListener listener) {
 		list.add(listener);
@@ -55,8 +63,8 @@ public abstract class DShapeModel {
 	}
 	
 	public void move(int x, int y) {
-		x1 += x;
-		y1 += y;
+		bounds.x += x;
+		bounds.y += y;
 		notifyListeners();
 	}
 	
@@ -74,30 +82,22 @@ public abstract class DShapeModel {
 		return this.y1;
 	}
 
-	public abstract int getWidth();
 
-	public abstract int getHeight();
 
 	public Color getColor() {
 		return this.shapeColor;
 	}
 
 	public Rectangle getBounds() {
-		Rectangle bounds = new Rectangle(x1, y1, this.getWidth(), this.getHeight());
 		return bounds;
 	}
 	public void setBounds(int x, int y, int width, int height) {
-		x1 = x;
-		y1 = y;
-		this.width = width;
-		this.height = height;
+		bounds = new Rectangle(x,y,width,height);
 		notifyListeners();
 	}
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
+	public void setBounds(Rectangle rect) {
+		bounds = new Rectangle(rect);
+		notifyListeners();
 	}
 
 	public void addTableListener(TableModel tableModel) {
@@ -111,6 +111,21 @@ public abstract class DShapeModel {
 
 		}
 	}
+
+	public int getID() {
+		return ID;
+	}
+	public void setID(int ID) {
+		this.ID = ID;
+	}
+	public void mimic(DShapeModel model) {
+		setID(model.getID());
+		setBounds(model.getBounds());
+		setColor(model.getColor());
+		notifyListeners();
+	}
+
+
 	public void markForRemoval() {
 		markedForRemoval = true;
 		notifyListeners();
@@ -120,7 +135,7 @@ public abstract class DShapeModel {
 		int y = (anchor.y < cursor.y ? anchor.y : cursor.y);
 		int width = Math.abs(anchor.x - cursor.x);
 		int height = Math.abs(anchor.y - cursor.y);
-		setBounds(x,y,width,height);
+		setBounds(new Rectangle(x,y,width,height));
 	}
 	public boolean markedForRemoval() {
 		return markedForRemoval;
