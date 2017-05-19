@@ -298,7 +298,7 @@ public class Canvas extends JPanel implements ModelListener
 			public void itemStateChanged(ItemEvent arg0) {
 			// TODO Auto-generated method stub
 				if(selected instanceof DText) {
-					((DText) selected).setFont(comboBox.getSelectedItem().toString(), 1);
+					((DText) selected).setFont(comboBox.getSelectedItem().toString());
 					modelChanged(selected.model);
 				}
 			}
@@ -429,7 +429,7 @@ public class Canvas extends JPanel implements ModelListener
 			shape = new DText(model,this);
 			//System.out.println(text2.getText());
 			((DTextModel)model).setText(text2.getText());
-			((DText)shape).setFont(comboBox.getSelectedItem().toString(), 1);
+			((DText)shape).setFont(comboBox.getSelectedItem().toString());
 			selected = shape;
 			shapes.add(shape);
 		}

@@ -27,16 +27,16 @@ public class DText extends DShape {
 		computeFont(g);
 		g2.setFont(textModel.getFont());
 		// Get clip for drawing within the rectangle bounds
-		Shape clip = g.getClip();
+		Shape clip = g2.getClip();
 		// Intersect the clip with the text shape bounds.
 		// i.e. we won't lay down any pixels that fall outside our                    
 		//bounds
-		g.setClip(clip.getBounds().createIntersection(getBounds()));
+		g2.setClip(clip.getBounds().createIntersection(getBounds()));
 		// Restore the old clip
 
 
-		g2.drawString(textModel.getText(),model.getX(),model.getY() + model.getHeight());
-		g.setClip(clip);
+		g2.drawString(textModel.getText(),model.getX(),model.getY() + 4* (model.getHeight() / 5));
+		g2.setClip(clip);
 		
 		if(selected) {
 			drawKnobs(g);
@@ -48,9 +48,11 @@ public class DText extends DShape {
 		DTextModel textModel = (DTextModel)model;
 		
 		String fontName = textModel.getFont().getFontName();
-		FontMetrics fontSize = g.getFontMetrics(textModel.getFont());
 		
 		textModel.setFont(fontName, size);
+		FontMetrics fontSize = g.getFontMetrics(textModel.getFont());
+		
+
 		
 		
 		while(fontSize.getHeight() <= textModel.getHeight()) {
@@ -62,8 +64,8 @@ public class DText extends DShape {
 
 	}
 	
-	public void setFont(String name, int size) {
-		((DTextModel)model).setFont(name, size);
+	public void setFont(String name) {
+		((DTextModel)model).setFont(name, 1);
 	}
 	@Override
 	public DTextModel getModel() {
