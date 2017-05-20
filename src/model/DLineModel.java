@@ -39,13 +39,4 @@ public class DLineModel extends DShapeModel {
 		p2 = new Point(cursor);
 		super.modifyWithPoints(anchor, cursor);
 	}
-	
-	@Override
-	public int getWidth() {
-		return width;
-	}
-	@Override
-	public int getHeight() {
-		return height;
-	}
 }

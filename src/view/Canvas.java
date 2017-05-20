@@ -48,6 +48,7 @@ import java.beans.XMLEncoder;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -68,15 +69,16 @@ public class Canvas extends JPanel implements ModelListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private Whiteboard whiteboard;
 	TableModel model;
 	DShape selected;
 	ArrayList<DShape> shapes;
-	JPanel east;
-	JPanel west;
 	JTable tablePane = new JTable(model);
 	JFileChooser fileChooser;
 	String textInput;
 	JFormattedTextField text2;
+
+
 	private int lastX;
 	private int lastY;
 	private Point movingPoint;
@@ -85,51 +87,18 @@ public class Canvas extends JPanel implements ModelListener
 	
 
 
-	public Canvas()
+	public Canvas(Whiteboard board)
 	{
-		shapes = new ArrayList<DShape>();
-
-		fileChooser = new JFileChooser();
-		this.setLayout(new BorderLayout());
-		this.setSize(400, 400);
-		this.setBackground(Color.WHITE);
-		west = new JPanel();
 		selected = null;
 		movingPoint = null;
-		
-		east = new JPanel()
-		{
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void paintComponent(Graphics g)
-			{
-				super.paintComponent(g);
-				for (Iterator<DShape> i = shapes.iterator(); i.hasNext(); )
-				{
-					DShape shape = i.next();
-
-					shape.draw(g,(selected == shape));
-				}
-			}
-		};
-		west.setSize(400,400);
-		west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
-		addButtonPane1(west);
-		addButtonPane2(west);
-		addButtonPane3(west);
-		addButtonPane4(west);
-		addButtonPane5(west);
-
-		addTablePane(west);
-		west.setBackground(Color.WHITE);
-		
+		whiteboard = board;
+		shapes = new ArrayList<DShape>();
+		setMinimumSize(new Dimension(400,400));
+		setPreferredSize(getMinimumSize());
+		setBackground(Color.WHITE);
 		
 
-		east.addMouseListener(new MouseAdapter()
+		addMouseListener(new MouseAdapter()
 		{
 			public void mousePressed(MouseEvent e)
 			{
@@ -138,7 +107,7 @@ public class Canvas extends JPanel implements ModelListener
 			}
 
 		});
-		east.addMouseMotionListener(new MouseMotionAdapter() {
+		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
 				int dx = e.getX() - lastX;
 				int dy = e.getY() - lastY;
@@ -153,237 +122,8 @@ public class Canvas extends JPanel implements ModelListener
 				}
 			}
 		});
-		east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
-		JButton b = new JButton("b");
-		b.setVisible(false);
-		east.add(b);
-
-		east.setBackground(Color.WHITE);
-
-		this.add(east, BorderLayout.CENTER);
-		this.add(west, BorderLayout.WEST);
-
-		for (Component comp : west.getComponents())
-		{
-			((JComponent) comp).setAlignmentX(Box.LEFT_ALIGNMENT);
-		}
 	}
 
-	private void addButtonPane1(JPanel pan)
-	{
-		JPanel buttonPane1 = new JPanel();
-		buttonPane1.setLayout(new BoxLayout(buttonPane1, BoxLayout.X_AXIS));
-		JLabel label = new JLabel("Add: ");
-		label.setBorder(new EmptyBorder(10, 10, 10, 10));
-		JButton rect = new JButton("rect");
-		//rect.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-		rect.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				DShapeModel model = new DRectModel();
-				addShape(model);
-				
-				
-			}
-
-		});
-
-		JButton oval = new JButton("oval");
-		//oval.setBorder(new EmptyBorder(10, 10, 10, 10));
-		oval.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				DShapeModel model = new DOvalModel();
-				addShape(model);
-				
-			}
-		});
-
-		JButton line = new JButton("line");
-//		line.setBorder(new EmptyBorder(10, 10, 10, 10));
-		line.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				DShapeModel model = new DLineModel();
-				addShape(model);
-			}
-		});
-		//line.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-		JButton text = new JButton("text");
-//		text.setBorder(new EmptyBorder(10, 10, 10, 10));
-		text.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				DShapeModel model = new DTextModel();
-				addShape(model);
-				//System.out.println("text");
-			}
-		});
-		//text.setBorder(new EmptyBorder(10, 10, 10, 10));
-		buttonPane1.add(label);
-		buttonPane1.add(rect);
-		buttonPane1.add(oval);
-		buttonPane1.add(line);
-		buttonPane1.add(text);
-		buttonPane1.setBorder(new EmptyBorder(10, 10, 10, 10));
-		buttonPane1.setBackground(Color.WHITE);
-		pan.add(buttonPane1);
-
-	}
-
-	private void addButtonPane2(JPanel pan)
-	{
-		JPanel buttonPane2 = new JPanel();
-		buttonPane2.setLayout(new BoxLayout(buttonPane2, BoxLayout.X_AXIS));
-		JButton setColor = new JButton("Set Color");
-		setColor.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (e.getSource() == setColor)
-				{
-					if (selected != null)
-					{
-						Color initialColor = Color.CYAN;
-						Color color = JColorChooser.showDialog(buttonPane2, "Select a color", initialColor);
-						System.out.println(color);
-						if(color != null && !color.equals(selected.getColor())) {
-							setSelectedColor(color);
-						}
-						modelChanged(selected.model);
-					}
-				}
-			}
-		});
-
-		buttonPane2.add(setColor);
-		buttonPane2.setBorder(new EmptyBorder(10, 10, 10, 10));
-		buttonPane2.setBackground(Color.WHITE);
-		pan.add(buttonPane2);
-	}
-
-	private void addButtonPane3(JPanel pan)
-	{
-		JPanel buttonPane3 = new JPanel();
-		buttonPane3.setLayout(new BoxLayout(buttonPane3, BoxLayout.X_AXIS));
-		text2 = new JFormattedTextField("Whiteboard!");
-		text2.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if(selected instanceof DText) {
-					selected.setText((String)event.getNewValue());
-					modelChanged(selected.model);
-				}
-			}
-			
-		});
-		text2.setMaximumSize(new Dimension(300,40));
-
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		String[] fonts = ge.getAvailableFontFamilyNames();
-		comboBox = new JComboBox<>(fonts);
-		
-		comboBox.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
-			// TODO Auto-generated method stub
-				if(selected instanceof DText) {
-					((DText) selected).setFont(comboBox.getSelectedItem().toString());
-					modelChanged(selected.model);
-				}
-			}
-			
-		});
-		//comboBox.setBorder(new EmptyBorder(10, 10, 10, 10));
-		comboBox.setBackground(Color.WHITE);
-		text2.setFont(comboBox.getFont());
-		//text2.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-		buttonPane3.add(text2);
-		buttonPane3.add(comboBox);
-		buttonPane3.setBorder(new EmptyBorder(10, 10, 10, 10));
-		buttonPane3.setBackground(Color.WHITE);
-		pan.add(buttonPane3);
-	}
-
-	private void addButtonPane4(JPanel pan)
-	{
-
-		JPanel buttonPane4 = new JPanel();
-		buttonPane4.setLayout(new BoxLayout(buttonPane4, BoxLayout.X_AXIS));
-		JButton moveToFront = new JButton("Move to Front");
-		moveToFront.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				moveSelectedToFront();
-			}
-		});
-		JButton moveToBack = new JButton("Move to Back");
-		moveToBack.addActionListener(new ActionListener()
-		 {
-			 @Override
-			 public void actionPerformed(ActionEvent e)
-			 {
-			 	moveSelectedToBack();
-			 }
-		 });
-		
-		 JButton removeShape = new JButton("Remove Shape");
-		 removeShape.addActionListener(new ActionListener()
-		 {
-			 @Override
-			 public void actionPerformed(ActionEvent e)
-			 {
-				if(selected != null)
-				{
-
-			 	markSelectedShapeForRemoval();
-				}
-			 }
-		 });
-		 buttonPane4.add(moveToFront);
-		 buttonPane4.add(moveToBack);
-		 buttonPane4.add(removeShape);
-		 buttonPane4.setBorder(new EmptyBorder(10, 10, 10, 10));
-		 buttonPane4.setBackground(Color.WHITE);
-		 pan.add(buttonPane4);
-	}
-
-	private void addButtonPane5(JPanel pan) {
-		JPanel buttonPane5 = new JPanel();
-		buttonPane5.setLayout(new BoxLayout(buttonPane5, BoxLayout.X_AXIS));
-		JButton saveCanvas = new JButton("Save Canvas");
-		saveCanvas.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				saveCanvas();
-			}
-		});
-		JButton saveImage = new JButton("Save Image");
-		saveImage.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				saveImage();
-			}
-		});
-		buttonPane5.add(saveCanvas);
-		buttonPane5.add(saveImage);
-		buttonPane5.setBorder(new EmptyBorder(10,10,10,10));
-		buttonPane5.setBackground(Color.WHITE);
-		pan.add(buttonPane5);
-	}
 	private void saveCanvas() {
 		int retVal = fileChooser.showSaveDialog(this);
 		if(retVal == JFileChooser.APPROVE_OPTION) {
@@ -415,7 +155,7 @@ public class Canvas extends JPanel implements ModelListener
         shape.markForRemoval();
 	}
 	public void moveToFront(DShape object) {
-	    didMoveToFront(object);
+	    whiteboard.didMoveToFront(object);
 		if(!shapes.isEmpty() && shapes.remove(object)) {
 			shapes.add(object);
 			
@@ -428,46 +168,29 @@ public class Canvas extends JPanel implements ModelListener
     }
 
 	public void moveToBack(DShape object) {
-	    didMoveToBack(object);
+
 		if (!shapes.isEmpty() && shapes.remove(object)){
 			shapes.add(0, object);
 		}
+		whiteboard.didMoveToBack(object);
 		repaintShape(object);
 	}
 
-	
 
-
-	private void addTablePane(JPanel pan)
+	public void addShape(DShapeModel model)
 	{
-
+		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
 		
-		model = new TableModel();
-		tablePane = new JTable(model);
-		tablePane.setLayout(new BoxLayout(tablePane, BoxLayout.X_AXIS));
-		JTableHeader head = tablePane.getTableHeader();
-		head.setBackground(Color.GRAY);
-		head.setReorderingAllowed(false);
-		head.setResizingAllowed(false);
-		
-		tablePane.setTableHeader(head);
-		tablePane.setBackground(Color.WHITE);
-		tablePane.setVisible(true);
-		pan.add(new JScrollPane(tablePane));
-	}
-
-
-	private void addShape(DShapeModel model)
-	{		
 		
 		if(selected != null) {
 			repaintShape(selected);
-			repaint();
+
 		}
 		DShape shape = null;
 		if (model instanceof DRectModel)
 		{
 			shape = new DRect(model, this);
+
 			selected = shape;
 			shapes.add(shape);
 			//model.setBounds(10, 10, 20, 30);
@@ -480,6 +203,7 @@ public class Canvas extends JPanel implements ModelListener
 
 		} else if (model instanceof DLineModel)
 		{
+
 			shape = new DLine(model,this);
 			selected = shape;
 			shapes.add(shape);
@@ -487,13 +211,13 @@ public class Canvas extends JPanel implements ModelListener
 		{
 			shape = new DText(model,this);
 			//System.out.println(text2.getText());
-			((DTextModel)model).setText(text2.getText());
-			((DText)shape).setFont(comboBox.getSelectedItem().toString());
 			selected = shape;
+			
 			shapes.add(shape);
 		}
 		model.addListener(this);
-		addToTable(shape);
+
+		whiteboard.addToTable(shape);
 		repaintShape(shape);
 		
 	}
@@ -502,7 +226,9 @@ public class Canvas extends JPanel implements ModelListener
 		selected.setColor(c);
 	}
 
-
+	public DShape getSelected() {
+	    return selected;
+    }
 
 	public boolean hasSelected() {
 		return selected != null;
@@ -530,24 +256,24 @@ public class Canvas extends JPanel implements ModelListener
 				}
 			}
 		}
-		updateTableSelection(selected);
-		east.repaint();
+		whiteboard.updateTableSelection(selected);
+		repaint();
 	}
 	public void repaintArea(Rectangle bounds) {
-		east.repaint(bounds);
+		repaint(bounds);
 		
 	}
 	public void removeShape(DShape shape) {
 		shapes.remove(shape);
-		didRemove(shape);
+		whiteboard.didRemove(shape);
 		repaintArea(shape.getBigBounds());
 	}
 	public void repaintShape(DShape shape) {
 		if(shape == selected) {
-			east.repaint(shape.getBigBounds());
+			repaint(shape.getBigBounds());
 			
 		} else {
-			east.repaint(shape.getBounds());
+			repaint(shape.getBounds());
 			
 		}
 	}
@@ -572,13 +298,9 @@ public class Canvas extends JPanel implements ModelListener
 	    updateTableSelection(shape);
     }
     public void didMoveToBack(DShape shape) {
-	    model.moveToBack(shape.getModel());
-	    updateTableSelection(shape);
-    }
-    public void addToTable(DShape shape) {
-	    model.addModel(shape.getModel());
-	    updateTableSelection(shape);
-    }
+		model.moveToBack(shape.getModel());
+		updateTableSelection(shape);
+	}
     public ArrayList<DShape> getShapes() {
 		return shapes;
 	}
@@ -591,7 +313,7 @@ public class Canvas extends JPanel implements ModelListener
 	public void saveImage(File file) {
 		DShape wasSelected = selected;
 		selected = null;
-		BufferedImage image = (BufferedImage) createImage(this.getWidth(),this.getHeight());
+		BufferedImage image = (BufferedImage) createImage(getWidth(),getHeight());
 		Graphics g = image.getGraphics();
 		paintAll(g);
 		g.dispose();
@@ -636,6 +358,14 @@ public class Canvas extends JPanel implements ModelListener
 		}
 		return models;
 	}
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		for(DShape shape: shapes) {
+			shape.draw(g,(selected == shape));
+		}
+	}
+
 	@Override
 	public void modelChanged(DShapeModel model) {
 		validate();

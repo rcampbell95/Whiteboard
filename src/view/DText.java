@@ -22,7 +22,7 @@ public class DText extends DShape {
 		// TODO Auto-generated method stub
 		DTextModel textModel = (DTextModel)model;
 		Graphics2D g2 = (Graphics2D)g;
-		g2.setPaint(model.getColor());
+		g2.setPaint(textModel.getColor());
 		
 		computeFont(g);
 		g2.setFont(textModel.getFont());
@@ -35,11 +35,12 @@ public class DText extends DShape {
 		// Restore the old clip
 
 
-		g2.drawString(textModel.getText(),model.getX(),model.getY() + 4* (model.getHeight() / 5));
+		g2.drawString(textModel.getText(),textModel.getBounds().x,textModel.getBounds().y + 4* (textModel.getHeight() / 5));
 		g2.setClip(clip);
 		
 		if(selected) {
 			drawKnobs(g);
+			
 		}
 	}
 	

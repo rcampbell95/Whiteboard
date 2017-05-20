@@ -17,8 +17,8 @@ public class DOval extends DShape {
 	@Override
 	public void draw(Graphics g, boolean selected) {
 		g.setColor(model.getColor());
-		//Rectangle bounds = model.getBounds();
-		g.fillOval(model.getX(), model.getY(), model.getWidth(), model.getHeight());
+		Rectangle bounds = model.getBounds();
+		g.fillOval(bounds.x,bounds.y,bounds.width,bounds.height);
 		if(selected) {
 			drawKnobs(g);
 		}

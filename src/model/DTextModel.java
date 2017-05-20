@@ -4,6 +4,7 @@ import java.awt.Font;
 
 public class DTextModel extends DShapeModel {
 	private String text;
+	private String fontName;
 	private Font textFont;
 	
 	public Font getFont() {
@@ -14,21 +15,33 @@ public class DTextModel extends DShapeModel {
 		textFont = new Font(name, 0, (int) size);
 	}
 
-	@Override
-	public int getWidth() {
-		return width;
+	public String getFontName() {
+		return fontName;
+	}
+	
+	public void setFontName(String fontName) {
+		this.fontName = fontName;
+		notifyListeners();
 	}
 
 	@Override
-	public int getHeight() {
-		return height;
+	public void mimic(DShapeModel model) {
+		DTextModel textMimic = (DTextModel) model;
+		setText(textMimic.getText());
+		setFontName(textMimic.getFontName());
+		super.mimic(model);
 	}
 
 	public void setText(String text) {
 		this.text = text;
+		notifyListeners();
 	}
 	
 	public String getText() {
 		return text;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 }
