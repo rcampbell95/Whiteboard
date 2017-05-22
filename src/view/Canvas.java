@@ -180,6 +180,14 @@ public class Canvas extends JPanel implements ModelListener
 			((DText)selected).setText(text);
 		}
 	}
+	public DShape getShapeWithID(int ID) {
+		for(DShape shape : shapes) {
+			if(shape.getModelID() == ID) {
+				return shape;
+			}
+		}
+		return null;
+	}
 
 	public void addShape(DShapeModel model)
 	{

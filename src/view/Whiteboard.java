@@ -377,6 +377,41 @@ public class Whiteboard extends JFrame {
 		canvas.addShape(model);
 	}
 
+	public void processMessage(final Message message) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				DShape shape = canvas.getShapeWithID(message.getModel().getID());
+				switch(message.getCommand()) {
+					case Message.ADD:
+						if (shape == null) {
+							canvas.addShape(message.getModel());
+						}
+						break;
+					case Message.REMOVE:
+						if(shape != null) {
+							canvas.markForRemoval(shape);
+						}
+						break;
+					case Message.BACK:
+						if(shape != null)
+							canvas.moveToBack(shape);
+						break;
+					case Message.FRONT:
+						if(shape != null)
+							canvas.moveToFront(shape);
+						break;
+					case Message.CHANGE:
+						if(shape != null)
+							shape.getModel().mimic(message.getModel());
+						updateTableSelection(shape);
+						break;
+					default:
+						break;
+				}
+			}
+		});
+	}
 
 	public static class Message {
 		public static final int ADD = 0;
@@ -420,14 +455,14 @@ public class Whiteboard extends JFrame {
  			this.port = port;
  		}
  		
- 		public void runt() {
+ 		public void run() {
  			try {
  				Socket toServer = new Socket(name, port);
  				ObjectInputStream inStream = new ObjectInputStream(toServer.getInputStream());
  				
  				while(true) {
- 					String xmlString = (String) in.readObject();
- 					XMLDecoder modelDecoder = new XMLDecoder(new ByteArrayInputStream(xmlString.getBytes());
+ 					String xmlString = (String) inStream.readObject();
+ 					XMLDecoder modelDecoder = new XMLDecoder(new ByteArrayInputStream(xmlString.getBytes()));
  					Message message = (Message) modelDecoder.readObject();
  					
  					processMessage(message);
@@ -437,6 +472,5 @@ public class Whiteboard extends JFrame {
  				e.printStackTrace();
  			}
  		}
- 	}
-  }
+  	}
 }
