@@ -14,6 +14,7 @@ public class DOval extends DShape {
 		// TODO Auto-generated constructor stub
 	}
 
+	
 	@Override
 	public void draw(Graphics g, boolean selected) {
 		g.setColor(model.getColor());
