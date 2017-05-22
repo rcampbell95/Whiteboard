@@ -14,12 +14,16 @@ import model.DTextModel;
 public class DText extends DShape {
 	private boolean needsRecomputeFont;
 	private Font computedFont;
+	private String lastFont;
+	private int lastHeight;
 
 	public DText(DShapeModel model, Canvas canvas) {
 		super(model, canvas);
 		// TODO Auto-generated constructor stub
 		needsRecomputeFont = true;
 		computedFont = null;
+		lastFont = "";
+		lastHeight = -1;
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class DText extends DShape {
 
 		//bounds
 		g2.setClip(clip.getBounds().createIntersection(getBounds()));
-		// Restore�the�old�clip
+
 
 
 		g2.drawString(textModel.getText(),textModel.getBounds().x, yPosition);
@@ -72,6 +76,17 @@ public class DText extends DShape {
 		return computedFont;
 		
 		
+	}
+	@Override
+	public void modelChanged(DShapeModel model) {
+		DTextModel textModel = (DTextModel) model;
+		if (textModel.getBounds().height != lastHeight
+				|| !textModel.getFontName().equals(lastFont)) {
+			lastHeight = textModel.getBounds().height;
+			lastFont = textModel.getFontName();
+			needsRecomputeFont = true;
+		}
+		super.modelChanged(textModel);
 	}
 	
 	public void setFont(String name) {
