@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.JTableHeader;
 
 public class Whiteboard extends JFrame {
@@ -171,11 +173,38 @@ public class Whiteboard extends JFrame {
 		disableG.add(setColorButton);
 	}
 
+	public void handleTextChange(DocumentEvent e) {
+		if(canvas.hasSelected() && canvas.getSelected() instanceof DText) {
+			canvas.setTextForSelected(textField.getText());
+		}
+	}
+	
 	public void addTextBox() {
 		Box horizontalBox = Box.createHorizontalBox();
 
 		textField = new JFormattedTextField("Whiteboard!");
 		textField.setMaximumSize(new Dimension(300,40));
+		
+		textField.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+			// TODO Auto-generated method stub
+			
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				handleTextChange(e);
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+			// TODO Auto-generated method stub
+				handleTextChange(e);
+			}
+			
+		});
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fonts = ge.getAvailableFontFamilyNames();
