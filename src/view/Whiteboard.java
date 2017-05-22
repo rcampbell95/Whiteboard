@@ -5,6 +5,8 @@ import model.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.XMLDecoder;
@@ -209,6 +211,17 @@ public class Whiteboard extends JFrame {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fonts = ge.getAvailableFontFamilyNames();
 		comboBox = new JComboBox<>(fonts);
+		comboBox.addActionListener(new ActionListener() {
+	 
+	 			@Override
+	 			public void actionPerformed(ActionEvent e) {
+	 			// TODO Auto-generated method stub
+	 				if(canvas.hasSelected() && canvas.getSelected() instanceof DText) {
+	 					canvas.setFontForSelected((String) comboBox.getSelectedItem());
+	 				}
+	 			}
+	 			
+	 	});
 		comboBox.setBackground(Color.WHITE);
 		textField.setFont(comboBox.getFont());
 

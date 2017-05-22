@@ -92,6 +92,10 @@ public class DText extends DShape {
 	public void setFont(String name) {
 		((DTextModel)model).setFont(name, 1);
 	}
+	
+	public void setFontName(String fontName) {
+		((DTextModel)model).setFontName(fontName);
+	}
 	@Override
 	public DTextModel getModel() {
 		return (DTextModel)model;

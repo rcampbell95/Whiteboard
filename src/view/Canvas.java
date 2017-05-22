@@ -256,6 +256,12 @@ public class Canvas extends JPanel implements ModelListener
 	    return selected;
     }
 
+	public void setFontForSelected(String fontName) {
+		if(selected instanceof DText) {
+			((DText) selected).setFontName(fontName);
+		}
+	}
+	
 	public boolean hasSelected() {
 		return selected != null;
 	}
