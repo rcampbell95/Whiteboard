@@ -591,7 +591,6 @@ public class Whiteboard extends JFrame {
  					Message message = (Message) modelDecoder.readObject();
  					
  					processMessage(message);
- 					System.out.println(message.toString());
  				}
  			}
  			catch(Exception e) {
