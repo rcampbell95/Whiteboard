@@ -438,5 +438,35 @@ public class Whiteboard extends JFrame {
  			}
  		}
  	}
-  }
+ 	
+ 	private class ServerAccepter extends Thread {
+ 		private int port;
+ 		
+ 		public ServerAccepter(int port) {
+ 			this.port = port;
+ 		}
+ 		
+ 		public void run() {
+ 			try {
+ 				Socket toClient = null;
+ 				ServerSocket serverSocket = new ServerSocket(port);
+ 				toClient = serverSocket.accept();
+ 				
+ 				final ObjectOutputStream out = new ObjectOutputStream(toClient.getOutputStream());
+ 				
+ 				if(!outputs.contains(out)) {
+ 					for(DShape shape : canvas.getShapes()) {
+ 						try {
+ 							out.writeObject(getXMLStringForMessage(new Message(Message.ADD, shape.getModel())));
+ 							out.flush();
+ 						}
+ 						catch(Exception e) {
+ 							e.printStackTrace();
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 	}
+ 	
 }
