@@ -102,23 +102,25 @@ public class Canvas extends JPanel implements ModelListener
 		{
 			public void mousePressed(MouseEvent e)
 			{
-				
+			if(whiteboard.isNotClient())
 				selectObjectForClick(e.getPoint());
 			}
 
 		});
 		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
-				int dx = e.getX() - lastX;
-				int dy = e.getY() - lastY;
-				lastX = e.getX();
-				lastY = e.getY();
-				if(movingPoint != null) {
-					movingPoint.x += dx;
-					movingPoint.y += dy;
-					selected.modifyShapeWithPoints(anchorPoint, movingPoint);
-				} else if(selected != null) {
-					selected.move(dx,dy);
+				if(whiteboard.isNotClient()) {
+					int dx = e.getX() - lastX;
+					int dy = e.getY() - lastY;
+					lastX = e.getX();
+					lastY = e.getY();
+					if (movingPoint != null) {
+						movingPoint.x += dx;
+						movingPoint.y += dy;
+						selected.modifyShapeWithPoints(anchorPoint, movingPoint);
+					} else if (selected != null) {
+						selected.move(dx, dy);
+					}
 				}
 			}
 		});
@@ -155,11 +157,13 @@ public class Canvas extends JPanel implements ModelListener
         shape.markForRemoval();
 	}
 	public void moveToFront(DShape object) {
-	    whiteboard.didMoveToFront(object);
+
 		if(!shapes.isEmpty() && shapes.remove(object)) {
 			shapes.add(object);
-			
 		}
+		whiteboard.didMoveToFront(object);
+		if(whiteboard.isServer())
+			whiteboard.doSend(Whiteboard.Message.FRONT, object.getModel());
 		repaintShape(object);
 	}
 
@@ -173,6 +177,8 @@ public class Canvas extends JPanel implements ModelListener
 			shapes.add(0, object);
 		}
 		whiteboard.didMoveToBack(object);
+		if(whiteboard.isServer())
+			whiteboard.doSend(Whiteboard.Message.BACK,object.getModel());
 		repaintShape(object);
 	}
 	public void setTextForSelected(String text) {
@@ -193,7 +199,9 @@ public class Canvas extends JPanel implements ModelListener
 	{
 		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
 		
-		
+		if(whiteboard.isNotClient()) {
+			model.setID(Whiteboard.getNextIDNumber());
+		}
 		if(selected != null) {
 			repaintShape(selected);
 
@@ -203,33 +211,39 @@ public class Canvas extends JPanel implements ModelListener
 		{
 			shape = new DRect(model, this);
 
-			selected = shape;
+
 			shapes.add(shape);
 			//model.setBounds(10, 10, 20, 30);
 
 		} else if (model instanceof DOvalModel)
 		{
 			shape = new DOval(model, this);
-			selected = shape;
+
 			shapes.add(shape);
 
 		} else if (model instanceof DLineModel)
 		{
 
 			shape = new DLine(model,this);
-			selected = shape;
+
 			shapes.add(shape);
 		} else if (model instanceof DTextModel)
 		{
 			shape = new DText(model,this);
 			//System.out.println(text2.getText());
-			selected = shape;
+
 			
 			shapes.add(shape);
 		}
 		model.addListener(this);
 
 		whiteboard.addToTable(shape);
+		if(whiteboard.isNotClient()) {
+			selected = shape;
+		}
+		if(whiteboard.isServer()) {
+			whiteboard.doSend(Whiteboard.Message.ADD, model);
+		}
 		repaintShape(shape);
 		
 	}
@@ -268,6 +282,9 @@ public class Canvas extends JPanel implements ModelListener
 				}
 			}
 		}
+		if(selected != null && whiteboard.isServer()) {
+			whiteboard.doSend(Whiteboard.Message.CHANGE, selected.getModel());
+		}
 		whiteboard.updateTableSelection(selected);
 		repaint();
 	}
@@ -278,6 +295,8 @@ public class Canvas extends JPanel implements ModelListener
 	public void removeShape(DShape shape) {
 		shapes.remove(shape);
 		whiteboard.didRemove(shape);
+		if(whiteboard.isServer())
+			whiteboard.doSend(Whiteboard.Message.REMOVE, shape.getModel());
 		repaintArea(shape.getBigBounds());
 	}
 	public void repaintShape(DShape shape) {
@@ -380,7 +399,7 @@ public class Canvas extends JPanel implements ModelListener
 
 	@Override
 	public void modelChanged(DShapeModel model) {
-		validate();
-		repaint();
+		if(whiteboard.isServer() && !model.markedForRemoval())
+			whiteboard.doSend(Whiteboard.Message.CHANGE, model);
 	}
 }

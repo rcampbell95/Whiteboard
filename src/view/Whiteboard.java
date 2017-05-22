@@ -38,6 +38,7 @@ public class Whiteboard extends JFrame {
 	private Box allControls;
 	private Canvas canvas;
 	private TableModel tableModel;
+	private static int nextID = 0;
 	private JTable table;
 	private JButton rectButton, ovalButton, lineButton, textButton,setColorButton, moveFrontButton,
 			moveBackButton, removeButton, saveImageButton, saveCanvasButton,openCanvasButton,
@@ -50,6 +51,9 @@ public class Whiteboard extends JFrame {
 	protected int height;
 	protected int x1, x2;
 	protected int y1, y2;
+	private ClientHandler clientHandler;
+	private ServerAccepter serverAccepter;
+	private int currentMode;
 	private ArrayList<ObjectOutputStream> outputs = new ArrayList<>();
 	private ArrayList<JComponent> disableG = new ArrayList<>();
 	private static final int NORMAL_MODE = 0;
@@ -186,6 +190,9 @@ public class Whiteboard extends JFrame {
 		disableG.add(textField);
 
 	}
+	public static int getNextIDNumber() {
+	    return nextID++;
+    }
 
 	public void addMoveBox() {
 		Box horizontalBox = Box.createHorizontalBox();
@@ -274,13 +281,13 @@ public class Whiteboard extends JFrame {
 		startServerButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+                doServer();
 			}
 		});
 		startClientButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+                doClient();
 			}
 		});
 
@@ -362,25 +369,29 @@ public class Whiteboard extends JFrame {
 	}
 
 	public void addShape(DShapeModel model) {
-		width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
-		height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
-		x1 = randGen.nextInt(CANVAS_SIZE - width);
-		y1 = randGen.nextInt(CANVAS_SIZE - height);
-		x2 = randGen.nextInt(CANVAS_SIZE - width);
-		y2 = randGen.nextInt(CANVAS_SIZE - height);
+        width = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+        height = LOWER_BOUND + randGen.nextInt(UPPER_BOUND);
+        x1 = randGen.nextInt(CANVAS_SIZE - width);
+        y1 = randGen.nextInt(CANVAS_SIZE - height);
+        x2 = randGen.nextInt(CANVAS_SIZE - width);
+        y2 = randGen.nextInt(CANVAS_SIZE - height);
 
-		if(model instanceof DLineModel) {
-			((DLineModel)model).modifyWithPoints(new Point(x1,y1),new Point(x2,y2));
-		} else {
-			model.setBounds(x1,y2,width,height);
-		}
-		canvas.addShape(model);
-	}
-	
-	public synchronized void addOutput(ObjectOutputStream out) {
-		outputs.add(out);
-	}
-
+        if (model instanceof DLineModel) {
+            ((DLineModel) model).modifyWithPoints(new Point(x1, y1), new Point(x2, y2));
+        } else {
+            model.setBounds(x1, y2, width, height);
+        }
+        canvas.addShape(model);
+    }
+    public boolean isNotClient() {
+	    return currentMode != CLIENT_MODE;
+    }
+    public boolean isServer() {
+	    return currentMode == SERVER_MODE;
+    }
+    public synchronized void addOutput(ObjectOutputStream out) {
+        outputs.add(out);
+    }
 	public void processMessage(final Message message) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -453,7 +464,7 @@ public class Whiteboard extends JFrame {
 		String result = JOptionPane.showInputDialog("Run server on port", "39587");
 		if(result != null) {
 			disableControls(SERVER_MODE);
-			modeLabel.setText(getModeString(SERVER_MODE));
+
 			currentMode = SERVER_MODE;
 			serverAccepter = new ServerAccepter(Integer.parseInt(result.trim()));
 			serverAccepter.start();
@@ -463,14 +474,24 @@ public class Whiteboard extends JFrame {
 	public void doClient() {
 		String result = JOptionPane.showInputDialog("Connect to host:port", "127.0.0.1:39587");
 		if(result != null) {
+		    String[] parts = result.split(".");
 			disableControls(SERVER_MODE);
-			modeLabel.setText(getModeString(SERVER_MODE));
-			currentMode = SERVER_MODE;
-			serverAccepter = new ServerAccepter(Integer.parseInt(result.trim()));
-			serverAccepter.start();
+
+			currentMode = CLIENT_MODE;
+			clientHandler = new ClientHandler(parts[0].trim(),Integer.parseInt(parts[1].trim()));
+			clientHandler.start();
 		}
 	}
-	
+
+	public void disableControls(int mode) {
+	    startClientButton.setEnabled(false);
+	    startServerButton.setEnabled(false);
+	    if(mode == CLIENT_MODE) {
+	        for(JComponent comp : disableG) {
+	            comp.setEnabled(false);
+            }
+        }
+    }
 	public void doSend(int command, DShapeModel model) {
 		Message message = new Message();
 		message.setCommand(command);
