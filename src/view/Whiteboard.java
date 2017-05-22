@@ -376,6 +376,10 @@ public class Whiteboard extends JFrame {
 		}
 		canvas.addShape(model);
 	}
+	
+	public synchronized void addOutput(ObjectOutputStream out) {
+		outputs.add(out);
+	}
 
 	public void processMessage(final Message message) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -467,10 +471,6 @@ public class Whiteboard extends JFrame {
 		}
 	}
 	
-	public void doClient() {
-		
-	}
-	
 	public void doSend(int command, DShapeModel model) {
 		Message message = new Message();
 		message.setCommand(command);
@@ -546,16 +546,22 @@ public class Whiteboard extends JFrame {
  				final ObjectOutputStream out = new ObjectOutputStream(toClient.getOutputStream());
 
  				if(!outputs.contains(out)) {
- 					for(DShape shape : canvas.getShapes()) {
- 						try {
- 							out.writeObject(getXMLStringForMessage(new Message(Message.ADD, shape.getModel())));
- 							out.flush();
+ 					Thread worker = new Thread(new Runnable() {
+ 						public void run() {
+							for(DShape shape : canvas.getShapes()) {
+		 						try {
+		 							out.writeObject(getXMLStringForMessage(new Message(Message.ADD, shape.getModel())));
+		 							out.flush();
+		 						}
+		 						catch(Exception e) {
+		 							e.printStackTrace();
+		 						}
+		 					}
  						}
- 						catch(Exception e) {
- 							e.printStackTrace();
- 						}
- 					}
+ 					});
+ 					worker.start();
  				}
+ 				addOutput(out);
  			}
  			catch(Exception e) {
  				e.printStackTrace();
