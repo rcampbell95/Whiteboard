@@ -42,24 +42,46 @@ public abstract class DShapeModel {
 		markedForRemoval = false;
 	}
 
+	/**
+	 * Add a listener to the model's list of listeners
+	 * @param listener
+	 */
 	public void addListener(ModelListener listener) {
 		list.add(listener);
 	}
 
+	/**
+	 * Remove the listener from the model's list of listeners
+	 * @param listener
+	 */
 	public void removeListener(ModelListener listener) {
 		list.remove(listener);
 	}
 
+	/**
+	 * Set the size of the shape
+	 * @param width
+	 * @param height
+	 */
 	public void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
 	}
 
+	/**
+	 * Set the color of the shape
+	 * @param shapeColor
+	 */
 	public void setColor(Color shapeColor) {
 		this.shapeColor = shapeColor;
 		notifyListeners();
 	}
 	
+	/**
+	 * Move the shape by an x and y offset
+	 * @param x
+	 * @param y
+	 */
 	public void move(int x, int y) {
 		bounds.x += x;
 		bounds.y += y;
@@ -72,16 +94,28 @@ public abstract class DShapeModel {
 		}
 	}
 
+	/**
+	 * Get the x position of the shape
+	 * @return
+	 */
 	public int getX() {
 		return this.x1;
 	}
 
+	/**
+	 * Get the y position of the shape
+	 * @return
+	 */
 	public int getY() {
 		return this.y1;
 	}
 
 
 
+	/**
+	 * Get the color of the shape
+	 * @return
+	 */
 	public Color getColor() {
 		return this.shapeColor;
 	}
@@ -112,13 +146,27 @@ public abstract class DShapeModel {
 
 		}
 	}
-
+	
+	/**
+	 * Get the ID of the model
+	 * @return ID
+	 */
 	public int getID() {
 		return ID;
 	}
+	
+	/**
+	 * Set the ID of the model
+	 * @param ID
+	 */
 	public void setID(int ID) {
 		this.ID = ID;
 	}
+	
+	/**
+	 * 
+	 * @param model
+	 */
 	public void mimic(DShapeModel model) {
 		setID(model.getID());
 		setBounds(model.getBounds());
@@ -126,7 +174,9 @@ public abstract class DShapeModel {
 		notifyListeners();
 	}
 
-
+	/**
+	 * 
+	 */
 	public void markForRemoval() {
 		markedForRemoval = true;
 		notifyListeners();
