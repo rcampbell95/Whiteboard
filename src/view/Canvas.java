@@ -198,7 +198,7 @@ public class Canvas extends JPanel implements ModelListener
 	public void addShape(DShapeModel model)
 	{
 		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
-		
+
 		if(whiteboard.isNotClient()) {
 			model.setID(Whiteboard.getNextIDNumber());
 		}
