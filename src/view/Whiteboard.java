@@ -410,6 +410,28 @@ public class Whiteboard extends JFrame {
 		}
 	}
 	
+	public void doSend(int command, DShapeModel model) {
+		Message message = new Message();
+		message.setCommand(command);
+		message.setModel(model);
+		sendRemote(message);
+	}
+	
+	public synchronized void sendRemote(Message message) {
+		String xmlString = getXMLStringForMessage(message);
+		Iterator<ObjectOutputStream> iterator = outputs.iterator();
+		while(iterator.hasNext()) {
+			ObjectOutputStream out = iterator.next();
+			try {
+				out.writeObject(xmlString);
+				out.flush();
+			} catch(Exception e) {
+				e.printStackTrace();
+				iterator.remove();
+			}
+		}
+	}
+	
    public String getXMLStringForMessage(Message message) {
       OutputStream memStream = new ByteArrayOutputStream();
       XMLEncoder encoder = new XMLEncoder(memStream);
@@ -428,14 +450,14 @@ public class Whiteboard extends JFrame {
  			this.port = port;
  		}
  		
- 		public void runt() {
+ 		public void run() {
  			try {
  				Socket toServer = new Socket(name, port);
  				ObjectInputStream inStream = new ObjectInputStream(toServer.getInputStream());
  				
  				while(true) {
- 					String xmlString = (String) in.readObject();
- 					XMLDecoder modelDecoder = new XMLDecoder(new ByteArrayInputStream(xmlString.getBytes());
+ 					String xmlString = (String) inStream.readObject();
+ 					XMLDecoder modelDecoder = new XMLDecoder(new ByteArrayInputStream(xmlString.getBytes()));
  					Message message = (Message) modelDecoder.readObject();
  					
  					processMessage(message);
