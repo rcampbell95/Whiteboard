@@ -445,7 +445,15 @@ public class Whiteboard extends JFrame {
 		}
 	}
 	
-	
+   public String getXMLStringForMessage(Message message) {
+      OutputStream memStream = new ByteArrayOutputStream();
+      XMLEncoder encoder = new XMLEncoder(memStream);
+      encoder.writeObject(message);
+      encoder.close();
+      return memStream.toString();
+  }
+
+
  	private class ClientHandler extends Thread {
  		private String name;
  		private int port;
@@ -472,5 +480,39 @@ public class Whiteboard extends JFrame {
  				e.printStackTrace();
  			}
  		}
-  	}
+ 	}
+
+ 	private class ServerAccepter extends Thread {
+ 		private int port;
+
+ 		public ServerAccepter(int port) {
+ 			this.port = port;
+ 		}
+
+ 		public void run() {
+ 			try {
+ 				Socket toClient = null;
+ 				ServerSocket serverSocket = new ServerSocket(port);
+ 				toClient = serverSocket.accept();
+
+ 				final ObjectOutputStream out = new ObjectOutputStream(toClient.getOutputStream());
+
+ 				if(!outputs.contains(out)) {
+ 					for(DShape shape : canvas.getShapes()) {
+ 						try {
+ 							out.writeObject(getXMLStringForMessage(new Message(Message.ADD, shape.getModel())));
+ 							out.flush();
+ 						}
+ 						catch(Exception e) {
+ 							e.printStackTrace();
+ 						}
+ 					}
+ 				}
+ 			}
+ 			catch(Exception e) {
+ 				e.printStackTrace();
+ 			}
+ 		}
+ 	}
+
 }
