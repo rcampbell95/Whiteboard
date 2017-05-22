@@ -410,6 +410,14 @@ public class Whiteboard extends JFrame {
 		}
 	}
 	
+   public String getXMLStringForMessage(Message message) {
+      OutputStream memStream = new ByteArrayOutputStream();
+      XMLEncoder encoder = new XMLEncoder(memStream);
+      encoder.writeObject(message);
+      encoder.close();
+      return memStream.toString();
+  }
+	
 	
  	private class ClientHandler extends Thread {
  		private String name;
@@ -465,6 +473,9 @@ public class Whiteboard extends JFrame {
  						}
  					}
  				}
+ 			}
+ 			catch(Exception e) {
+ 				e.printStackTrace();
  			}
  		}
  	}
