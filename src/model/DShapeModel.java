@@ -57,6 +57,7 @@ public abstract class DShapeModel {
 
 	public void setColor(Color shapeColor) {
 		this.shapeColor = shapeColor;
+		notifyListeners();
 	}
 	
 	public void move(int x, int y) {
