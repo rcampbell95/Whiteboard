@@ -445,6 +445,28 @@ public class Whiteboard extends JFrame {
 		}
 	}
 	
+	public void doSend(int command, DShapeModel model) {
+		Message message = new Message();
+		message.setCommand(command);
+		message.setModel(model);
+		sendRemote(message);
+	}
+	
+	public synchronized void sendRemote(Message message) {
+		String xmlString = getXMLStringForMessage(message);
+		Iterator<ObjectOutputStream> iterator = outputs.iterator();
+		while(iterator.hasNext()) {
+			ObjectOutputStream out = iterator.next();
+			try {
+				out.writeObject(xmlString);
+				out.flush();
+			} catch(Exception e) {
+				e.printStackTrace();
+				iterator.remove();
+			}
+		}
+	}
+	
    public String getXMLStringForMessage(Message message) {
       OutputStream memStream = new ByteArrayOutputStream();
       XMLEncoder encoder = new XMLEncoder(memStream);
