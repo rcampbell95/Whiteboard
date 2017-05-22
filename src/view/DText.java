@@ -17,18 +17,22 @@ public class DText extends DShape {
 	private String lastFont;
 	private int lastHeight;
 
+	/**
+	 * Constructor for DText, sets default values
+	 */
 	public DText(DShapeModel model, Canvas canvas) {
 		super(model, canvas);
-		// TODO Auto-generated constructor stub
 		needsRecomputeFont = true;
 		computedFont = null;
 		lastFont = "";
 		lastHeight = -1;
 	}
 
+	/**
+	 * Draws the text and if selected, the knobs
+	 */
 	@Override
 	public void draw(Graphics g,boolean selected) {
-		// TODO Auto-generated method stub
 		DTextModel textModel = (DTextModel)model;
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setPaint(textModel.getColor());
@@ -54,7 +58,12 @@ public class DText extends DShape {
 			
 		}
 	}
-	
+
+	/**
+	 * Computes the font of the text
+	 * @param g
+	 * @return computedFont
+	 */
 	public Font computeFont(Graphics g) {
 		if(needsRecomputeFont) {
 			double size = 1.0;
@@ -77,6 +86,11 @@ public class DText extends DShape {
 		
 		
 	}
+
+	/**
+	 * Implements the modelChanged interface, updates the text
+	 * @param model
+	 */
 	@Override
 	public void modelChanged(DShapeModel model) {
 		DTextModel textModel = (DTextModel) model;
@@ -88,14 +102,26 @@ public class DText extends DShape {
 		}
 		super.modelChanged(textModel);
 	}
-	
+
+	/**
+	 * Sets the font
+	 * @param name
+	 */
 	public void setFont(String name) {
 		((DTextModel)model).setFont(name, 1);
 	}
-	
+
+	/**
+	 * Sets the font name
+	 * @param fontName
+	 */
 	public void setFontName(String fontName) {
 		((DTextModel)model).setFontName(fontName);
 	}
+
+	/**
+	 * Gets the model of the text
+	 */
 	@Override
 	public DTextModel getModel() {
 		return (DTextModel)model;

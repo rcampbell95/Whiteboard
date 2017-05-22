@@ -9,11 +9,22 @@ import model.DShapeModel;
 
 public class DOval extends DShape {
 
+	/**
+	 * Constructor
+	 * @param model
+	 * @param canvas
+	 */
 	public DOval(DShapeModel model, Canvas canvas) {
 		super(model, canvas);
 		// TODO Auto-generated constructor stub
 	}
 
+
+	/**
+	 * Draw DOval
+	 * @param g
+	 * @param selected
+	 */
 	@Override
 	public void draw(Graphics g, boolean selected) {
 		g.setColor(model.getColor());
@@ -24,6 +35,11 @@ public class DOval extends DShape {
 		}
 		
 	}
+
+	/**
+	 * Return DOvalModel
+	 * @return
+	 */
 	@Override
 	public DOvalModel getModel() {
 		return (DOvalModel) model;

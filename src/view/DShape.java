@@ -17,6 +17,11 @@ public abstract class DShape implements ModelListener {
 	Canvas canvas;
 	boolean needsRecomputeKnobs;
 
+	/**
+	 * DShape's Constructor
+	 * @param model
+	 * @param canvas
+	 */
 	public DShape(DShapeModel model, Canvas canvas) {
 		this.model = model;
 		this.canvas = canvas;
@@ -25,6 +30,11 @@ public abstract class DShape implements ModelListener {
 		needsRecomputeKnobs = false;
 		model.addListener(this);
 	}
+
+	/**
+	 * Default drawKnobs
+	 * @param g
+	 */
 	public void drawKnobs(Graphics g) {
 		g.setColor(Color.BLACK);
 		for(Point point: getKnobs()) {
@@ -32,27 +42,54 @@ public abstract class DShape implements ModelListener {
 		}
 	}
 
+	/**
+	 * Return model's bounds
+	 * @return model.getBounds()
+	 */
 	public Rectangle getBounds() {
 		return model.getBounds();
 	}
-	
+
+	/**
+	 * Returns model's bounds including knobs
+	 * @return
+	 */
 	public Rectangle getBigBounds() {
 		return getBigBoundsForModel(model);
 	}
-	
+
+	/**
+	 *
+	 * @param model
+	 * @return new Rectangle
+	 */
 	public Rectangle getBigBoundsForModel(DShapeModel model) {
 		Rectangle b = model.getBounds();
 		return new Rectangle(b.x-9/2,b.y - 9/2,b.width + 9,b.height + 9);
 	}
+
+	/**
+	 *
+	 * @return Rectangle bounds of last position
+	 */
 	public Rectangle getBigBoundsOfLastPosition() {
 		return new Rectangle(lastBounds.x - 9/2,lastBounds.y - 9/2,lastBounds.width + 9,lastBounds.height + 9);
 	}
-	
+
+	/**
+	 * Move the shape
+	 * @param x
+	 * @param y
+	 */
 	public void move(int x, int y) {
 		needsRecomputeKnobs = true;
 		model.move(x,y);
 	}
 
+	/**
+	 * Computes knobs
+	 * @return ArrayList<Point>
+	 */
 	public ArrayList<Point> getKnobs() {
 		if(knobs == null || needsRecomputeKnobs) {
 			knobs = new ArrayList<>();
@@ -69,35 +106,86 @@ public abstract class DShape implements ModelListener {
 		return knobs;
 	}
 
+	/**
+	 *
+	 * @param point
+	 * @return Anchor Point for a selected knob
+	 */
 	public Point getAnchorForSelectedKnob(Point point) {
 		int index = getKnobs().indexOf(point);
 		return new Point(knobs.get((index + knobs.size() / 2) % knobs.size()));
 	}
+
+	/**
+	 *
+	 * @param point
+	 * @param knobCenter
+	 * @return if Mouse is within knob
+	 */
 	public boolean selectedKnob(Point point, Point knobCenter)
 	{
 		Rectangle knob = new Rectangle(knobCenter.x - 9 / 2, knobCenter.y - 9 / 2, 9, 9);
 		return knob.contains(point);
 	}
-	
+
+	/**
+	 * Abstract draw method
+	 * @param g
+	 * @param selected
+	 */
 	public abstract void draw(Graphics g, boolean selected);
-	
+
+	/**
+	 * Abstract getter for Model
+	 * @return
+	 */
 	public abstract DShapeModel getModel();
 
+	/**
+	 * Getter for Model's ID
+	 * @return ID
+	 */
 	public int getModelID() {
 		return model.getID();
 	}
+
+	/**
+	 * Sets the color of the object
+	 * @param c
+	 */
 	public void setColor(Color c) {
 		model.setColor(c);
 	}
+
+	/**
+	 * Gets the color of the object
+	 * @return Color
+	 */
 	public Color getColor() {
 		return model.getColor();
 	}
+
+	/**
+	 * Returns the text of a DTextModel
+	 * @return String
+	 */
 	public String getText() {
 		return ((DTextModel)model).getText();
 	}
+
+	/**
+	 * Setter for DTextModel's text
+	 * @param text
+	 */
 	public void setText(String text) {
 		((DTextModel)model).setText(text);
 	}
+
+	/**
+	 *
+	 * @param point
+	 * @return if shape contains a Point
+	 */
 	public boolean containsPoint(Point point) {
 		Rectangle bounds = model.getBounds();
 		
@@ -112,15 +200,28 @@ public abstract class DShape implements ModelListener {
 		}
 		return false;
 	}
+
+	/**
+	 * Adds Anchor and cursor points
+	 * @param anchor
+	 * @param cursor
+	 */
 	public void modifyShapeWithPoints(Point anchor, Point cursor) {
 		needsRecomputeKnobs = true;
 		model.modifyWithPoints(anchor, cursor);
 	}
 
+	/**
+	 * DShape's communication to Model's markForRemoval
+	 */
 	public void markForRemoval() {
 		model.markForRemoval();
 	}
-	
+
+	/**
+	 * DShape's default modelChanged
+	 * @param model
+	 */
 	@Override
 	public void modelChanged(DShapeModel model) {
 		if(this.model == model) {
