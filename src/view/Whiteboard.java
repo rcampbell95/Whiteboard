@@ -164,7 +164,7 @@ public class Whiteboard extends JFrame {
 		Box horizontalBox = Box.createHorizontalBox();
 
 		textField = new JFormattedTextField("Whiteboard!");
-		textField.addPropertyChangeListener(new PropertyChangeListener() {
+		/*textField.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if(canvas.hasSelected() && canvas.getSelected() instanceof DText) {
@@ -173,7 +173,7 @@ public class Whiteboard extends JFrame {
 				}
 			}
 			
-		});
+		});*/
 		textField.setMaximumSize(new Dimension(300,40));
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
