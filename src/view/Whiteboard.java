@@ -410,6 +410,32 @@ public class Whiteboard extends JFrame {
 		}
 	}
 	
+	public void doServer() {
+		String result = JOptionPane.showInputDialog("Run server on port", "39587");
+		if(result != null) {
+			disableControls(SERVER_MODE);
+			modeLabel.setText(getModeString(SERVER_MODE));
+			currentMode = SERVER_MODE;
+			serverAccepter = new ServerAccepter(Integer.parseInt(result.trim()));
+			serverAccepter.start();
+		}
+	}
+	
+	public void doClient() {
+		String result = JOptionPane.showInputDialog("Connect to host:port", "127.0.0.1:39587");
+		if(result != null) {
+			disableControls(SERVER_MODE);
+			modeLabel.setText(getModeString(SERVER_MODE));
+			currentMode = SERVER_MODE;
+			serverAccepter = new ServerAccepter(Integer.parseInt(result.trim()));
+			serverAccepter.start();
+		}
+	}
+	
+	public void doClient() {
+		
+	}
+	
 	public void doSend(int command, DShapeModel model) {
 		Message message = new Message();
 		message.setCommand(command);
