@@ -12,6 +12,12 @@ public class DLine extends DShape {
 		super(model,canvas);
 	}
 
+
+	/**
+	 * Draw lines
+	 * @param g
+	 * @param selected
+	 */
 	@Override
 	public void draw(Graphics g, boolean selected) {
 		DLineModel lineM = getModel();
@@ -21,12 +27,20 @@ public class DLine extends DShape {
 			drawKnobs(g);
 		}
 	}
-	
+
+	/**
+	 * DLineModel's model
+	 * @return
+	 */
 	@Override
 	public DLineModel getModel() {
 		return (DLineModel)model;
 	}
-	
+
+	/**
+	 * Recomputed knobs for DLine
+	 * @return
+	 */
 	@Override
 	public ArrayList<Point> getKnobs() {
 		if(knobs == null || needsRecomputeKnobs) {

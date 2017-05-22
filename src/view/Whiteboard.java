@@ -523,7 +523,7 @@ public class Whiteboard extends JFrame {
 		String result = JOptionPane.showInputDialog("Connect to host:port", "127.0.0.1:39587");
 		if(result != null) {
 		    String[] parts = result.split(":");
-			disableControls(SERVER_MODE);
+			disableControls(CLIENT_MODE);
 
 			currentMode = CLIENT_MODE;
 			clientHandler = new ClientHandler(parts[0].trim(),Integer.parseInt(parts[1].trim()));
