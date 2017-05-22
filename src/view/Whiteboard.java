@@ -7,8 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -406,4 +409,34 @@ public class Whiteboard extends JFrame {
 			this.model = model;
 		}
 	}
+	
+	
+ 	private class ClientHandler extends Thread {
+ 		private String name;
+ 		private int port;
+ 		
+ 		public ClientHandler(final String name, final int port) {
+ 			this.name = name;
+ 			this.port = port;
+ 		}
+ 		
+ 		public void runt() {
+ 			try {
+ 				Socket toServer = new Socket(name, port);
+ 				ObjectInputStream inStream = new ObjectInputStream(toServer.getInputStream());
+ 				
+ 				while(true) {
+ 					String xmlString = (String) in.readObject();
+ 					XMLDecoder modelDecoder = new XMLDecoder(new ByteArrayInputStream(xmlString.getBytes());
+ 					Message message = (Message) modelDecoder.readObject();
+ 					
+ 					processMessage(message);
+ 				}
+ 			}
+ 			catch(Exception e) {
+ 				e.printStackTrace();
+ 			}
+ 		}
+ 	}
+  }
 }
