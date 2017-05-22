@@ -376,6 +376,10 @@ public class Whiteboard extends JFrame {
 		}
 		canvas.addShape(model);
 	}
+	
+	public synchronized void addOutput(ObjectOutputStream out) {
+		outputs.add(out);
+	}
 
 
 	public static class Message {
@@ -430,10 +434,6 @@ public class Whiteboard extends JFrame {
 			serverAccepter = new ServerAccepter(Integer.parseInt(result.trim()));
 			serverAccepter.start();
 		}
-	}
-	
-	public void doClient() {
-		
 	}
 	
 	public void doSend(int command, DShapeModel model) {
@@ -511,16 +511,22 @@ public class Whiteboard extends JFrame {
  				final ObjectOutputStream out = new ObjectOutputStream(toClient.getOutputStream());
  				
  				if(!outputs.contains(out)) {
- 					for(DShape shape : canvas.getShapes()) {
- 						try {
- 							out.writeObject(getXMLStringForMessage(new Message(Message.ADD, shape.getModel())));
- 							out.flush();
+ 					Thread worker = new Thread(new Runnable() {
+ 						public void run() {
+							for(DShape shape : canvas.getShapes()) {
+		 						try {
+		 							out.writeObject(getXMLStringForMessage(new Message(Message.ADD, shape.getModel())));
+		 							out.flush();
+		 						}
+		 						catch(Exception e) {
+		 							e.printStackTrace();
+		 						}
+		 					}
  						}
- 						catch(Exception e) {
- 							e.printStackTrace();
- 						}
- 					}
+ 					});
+ 					worker.start();
  				}
+ 				addOutput(out);
  			}
  			catch(Exception e) {
  				e.printStackTrace();
