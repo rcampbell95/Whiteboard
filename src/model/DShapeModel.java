@@ -120,9 +120,21 @@ public abstract class DShapeModel {
 		return this.shapeColor;
 	}
 
+	/**
+	 * Get the bounding rectangle of the shape
+	 * @return
+	 */
 	public Rectangle getBounds() {
 		return bounds;
 	}
+	
+	/**
+	 * Set the bounding rectangle of the shape
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
 	public void setBounds(int x, int y, int width, int height) {
 		bounds = new Rectangle(x,y,width,height);
 		this.x1 = x;
@@ -130,15 +142,28 @@ public abstract class DShapeModel {
 		this.height = height;
 		notifyListeners();
 	}
+	
+	/**
+	 * Set the bounding rectangle of the shape
+	 * @param rect
+	 */
 	public void setBounds(Rectangle rect) {
 		bounds = new Rectangle(rect);
 		notifyListeners();
 	}
 
+	/**
+	 * Add a table model to the listeners
+	 * @param tableModel
+	 */
 	public void addTableListener(TableModel tableModel) {
 		this.list.add(tableModel);		
 	}
 
+	/**
+	 * Remove a table model from the listeners
+	 * @param tableModel
+	 */
 	public void removeTableListener(TableModel tableModel) {
 		if(this.list.contains(tableModel))
 		{
@@ -164,7 +189,7 @@ public abstract class DShapeModel {
 	}
 	
 	/**
-	 * 
+	 * Copies the model of this DShapeModel to the model
 	 * @param model
 	 */
 	public void mimic(DShapeModel model) {
@@ -175,12 +200,16 @@ public abstract class DShapeModel {
 	}
 
 	/**
-	 * 
+	 * Mark the shape for removal
 	 */
 	public void markForRemoval() {
 		markedForRemoval = true;
 		notifyListeners();
 	}
+	
+	/**
+	 * Set anchor and cursor for model when resizing
+	 */
 	public void modifyWithPoints(Point anchor, Point cursor) {
 		int x = (anchor.x < cursor.x ? anchor.x : cursor.x);
 		int y = (anchor.y < cursor.y ? anchor.y : cursor.y);
@@ -188,6 +217,10 @@ public abstract class DShapeModel {
 		int height = Math.abs(anchor.y - cursor.y);
 		setBounds(new Rectangle(x,y,width,height));
 	}
+	
+	/**
+	 * Check if the shape is marked for removal
+	 */
 	public boolean markedForRemoval() {
 		return markedForRemoval;
 	}
