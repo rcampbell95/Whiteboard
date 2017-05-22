@@ -85,8 +85,7 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Gets the total row count of the table
 	 */
 	@Override
 	public int getRowCount() {
@@ -94,6 +93,9 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 		return modelArray.size();
 	}
 
+	/**
+	 * Gets the value at a certain cell specified by a row and column as the arguments 
+	 */
 	@Override
 	public Object getValueAt(int arg0, int arg1) {
 		
