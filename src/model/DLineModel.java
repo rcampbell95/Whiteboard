@@ -39,4 +39,11 @@ public class DLineModel extends DShapeModel {
 		p2 = new Point(cursor);
 		super.modifyWithPoints(anchor, cursor);
 	}
+	@Override
+	public void mimic(DShapeModel model) {
+		DLineModel lineMimic = (DLineModel) model;
+		setPoint1(lineMimic.getPoint1());
+		setPoint2(lineMimic.getPoint2());
+		super.mimic(model);
+	}
 }
