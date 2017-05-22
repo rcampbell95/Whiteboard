@@ -65,9 +65,7 @@ import model.TableModel;
 public class Canvas extends JPanel implements ModelListener 
 {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private Whiteboard whiteboard;
 	TableModel model;
@@ -86,7 +84,10 @@ public class Canvas extends JPanel implements ModelListener
 	JComboBox<String> comboBox;
 	
 
-
+	/**
+	 * The constructor for canvas
+	 * @param board the whiteboard that canvas is being added to
+	 */
 	public Canvas(Whiteboard board)
 	{
 		selected = null;
@@ -125,13 +126,19 @@ public class Canvas extends JPanel implements ModelListener
 			}
 		});
 	}
-
+	/**
+	 * Opens the dialogue to save canvas
+	 */
 	private void saveCanvas() {
 		int retVal = fileChooser.showSaveDialog(this);
 		if(retVal == JFileChooser.APPROVE_OPTION) {
 			this.saveCanvas(fileChooser.getSelectedFile());
 		}
 	}
+	/**
+	 * Saves canvas as an XML file
+	 * @param file the file that canvas is being saved to
+	 */
 	public void saveCanvas(File file) {
 		try {
 			XMLEncoder xmlOut = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
@@ -142,20 +149,35 @@ public class Canvas extends JPanel implements ModelListener
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Sends the selected instance variable
+	 * to the front using moveToFront
+	 */
 	public void moveSelectedToFront() {
 	    moveToFront(selected);
     }
 
-
+	/**
+	 * Takes the selected shape and 
+	 * marks it for removal
+	 */
     public void markSelectedShapeForRemoval() {
 	    markForRemoval(selected);
 	    selected = null;
     }
+    /**
+     * Takes the given shape, removes its listener
+     * and marks for removal
+     * @param shape the DShape that is to be marked for removal
+     */
     public void markForRemoval(DShape shape) {
         shape.getModel().removeListener(this);
         shape.markForRemoval();
 	}
+    /**
+     * Moves the given shape in front of overlapping shape
+     * @param object the given object that is to be moved to the front
+     */
 	public void moveToFront(DShape object) {
 
 		if(!shapes.isEmpty() && shapes.remove(object)) {
@@ -166,11 +188,18 @@ public class Canvas extends JPanel implements ModelListener
 			whiteboard.doSend(Whiteboard.Message.FRONT, object.getModel());
 		repaintShape(object);
 	}
-
+	/**
+	 * Sends the selected object behind any DShapes 
+	 * it may be overlapping using moveToBack method
+	 * 
+	 */
 	public void moveSelectedToBack() {
 	    moveToBack(selected);
     }
-
+	/**
+	 * Moves the given object behind any DShapes it may be overlapping
+	 * @param object the given object that is to be moved to the front
+	 */
 	public void moveToBack(DShape object) {
 
 		if (!shapes.isEmpty() && shapes.remove(object)){
@@ -181,11 +210,22 @@ public class Canvas extends JPanel implements ModelListener
 			whiteboard.doSend(Whiteboard.Message.BACK,object.getModel());
 		repaintShape(object);
 	}
+	/**
+	 * If the selected is a DText, sets the selected's 
+	 * text equal to the given String text
+	 * @param text the String that is to be selected's text
+	 */
 	public void setTextForSelected(String text) {
 		if(selected instanceof DText) {
 			((DText)selected).setText(text);
 		}
 	}
+	/**
+	 * Finds and returns the shape that has
+	 * a specific ID
+	 * @param ID the ID of the shape being searched
+	 * @return shape the shape with the corresponding ID
+	 */
 	public DShape getShapeWithID(int ID) {
 		for(DShape shape : shapes) {
 			if(shape.getModelID() == ID) {
@@ -194,7 +234,10 @@ public class Canvas extends JPanel implements ModelListener
 		}
 		return null;
 	}
-
+	/**
+	 * Adds a shape to the ArrayList of canvas' shapes
+	 * @param model the model type of the shape that is being added
+	 */
 	public void addShape(DShapeModel model)
 	{
 		//System.out.println(model.getX() + " " + model.getY() + " " + model.getWidth() + " " + model.getHeight());
@@ -247,25 +290,42 @@ public class Canvas extends JPanel implements ModelListener
 		repaintShape(shape);
 		
 	}
-
+	/**
+	 * Sets the selected's color to a given color
+	 * @param c the color being set to selected
+	 */
 	public void setSelectedColor(Color c) {
 		selected.setColor(c);
 	}
-
+	/**
+	 * Returns the selected instance variable
+	 * @return selected
+	 */
 	public DShape getSelected() {
 	    return selected;
     }
-
+	/**
+	 * Sets the font for the selected instance variable
+	 * if said selected is of type DText
+	 * @param fontName the name of the font being set to selected
+	 */
 	public void setFontForSelected(String fontName) {
 		if(selected instanceof DText) {
 			((DText) selected).setFontName(fontName);
 		}
 	}
-	
+	/**
+	 * Checks if selected is null
+	 * @return 
+	 */
 	public boolean hasSelected() {
 		return selected != null;
 	}
-
+	/**
+	 * Checks if the mouse has clicked a shape and sets
+	 * that shape to the selected
+	 * @param pt the given point of mouse click
+	 */
 	public void selectObjectForClick(Point pt)
 	{
 		lastX = pt.x;
@@ -294,10 +354,18 @@ public class Canvas extends JPanel implements ModelListener
 		whiteboard.updateTableSelection(selected);
 		repaint();
 	}
+	/**
+	 * Repaints an area of canvas within a given bound
+	 * @param bounds the rectangle bounds to be repainted
+	 */
 	public void repaintArea(Rectangle bounds) {
 		repaint(bounds);
 		
 	}
+	/**
+	 * Removes a shape from the canvas
+	 * @param shape the shape to be removed
+	 */
 	public void removeShape(DShape shape) {
 		shapes.remove(shape);
 		whiteboard.didRemove(shape);
@@ -305,6 +373,10 @@ public class Canvas extends JPanel implements ModelListener
 			whiteboard.doSend(Whiteboard.Message.REMOVE, shape.getModel());
 		repaintArea(shape.getBigBounds());
 	}
+	/**
+	 * Repaints a shape into the canvas
+	 * @param shape the given shape that is to be repainted
+	 */
 	public void repaintShape(DShape shape) {
 		if(shape == selected) {
 			repaint(shape.getBigBounds());
@@ -314,7 +386,10 @@ public class Canvas extends JPanel implements ModelListener
 			
 		}
 	}
-
+	/**
+	 * Updates the table with the selected
+	 * @param selected the shape tablePane is being updated with
+	 */
 	public void updateTableSelection(DShape selected) {
 	    tablePane.clearSelection();
 	    if(selected != null) {
@@ -322,31 +397,59 @@ public class Canvas extends JPanel implements ModelListener
 	        tablePane.setRowSelectionInterval(index,index);
         }
     }
+	/**
+	 * Removes a shapes model from the table model
+	 * @param shape the shape whose model is being deleted
+	 */
     public void didRemove(DShape shape) {
 	    model.removeModel(shape.getModel());
 	    updateTableSelection(null);
     }
+    /**
+     * Clears the tablePane
+     */
     public void clearTable() {
 	    updateTableSelection(null);
 	    model.clearTable();
     }
+    /**
+     * Rearranges the order of the table
+     * if a shape is moved to front
+     * @param shape the shape being moved to front
+     */
     public void didMoveToFront(DShape shape) {
 	    model.moveToFront(shape.getModel());
 	    updateTableSelection(shape);
     }
+    /**
+     * Rearranges the order of the table
+     * if a shape is moved to back
+     * @param shape the shape being moved to back
+     */
     public void didMoveToBack(DShape shape) {
 		model.moveToBack(shape.getModel());
 		updateTableSelection(shape);
 	}
+    /**
+     * Returns the ArrayList of shapes on the canvas
+     * @return shapes
+     */
     public ArrayList<DShape> getShapes() {
 		return shapes;
 	}
+    /**
+     * Displays the file saver
+     */
 	public void saveImage() {
 		int retVal = fileChooser.showSaveDialog(this);
 		if(retVal == JFileChooser.APPROVE_OPTION) {
 			saveImage(fileChooser.getSelectedFile());
 		}
 	}
+	/**
+	 * Saves the canvas as a PNG file
+	 * @param file the file the canvas png is being saved to
+	 */
 	public void saveImage(File file) {
 		DShape wasSelected = selected;
 		selected = null;
@@ -361,13 +464,19 @@ public class Canvas extends JPanel implements ModelListener
 		}
 		selected = wasSelected;
 	}
-
+	/**
+	 * Displays the file open dialogue
+	 */
 	public void openCanvas() {
 		int retVal = fileChooser.showOpenDialog(this);
 		if(retVal == JFileChooser.APPROVE_OPTION) {
 			openCanvas(fileChooser.getSelectedFile());
 		}
 	}
+	/**
+	 * Opens a previously saved canvas file
+	 * @param file the canvas file being opend
+	 */
 	public void openCanvas(File file) {
 		markAllForRemoval();
 		try {
@@ -381,13 +490,19 @@ public class Canvas extends JPanel implements ModelListener
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Marks all of canvas' shapes for removal
+	 */
 	public void markAllForRemoval() {
 		selected = null;
 		for(int i = shapes.size() - 1;i>=0;i--) {
 			markForRemoval(shapes.get(i));
 		}
 	}
+	/**
+	 * Returns the models of all the shapes on canvas
+	 * @return models
+	 */
 	public ArrayList<DShapeModel> getShapeModels() {
 		ArrayList<DShapeModel> models = new ArrayList<>();
 		for(DShape shape : shapes) {
