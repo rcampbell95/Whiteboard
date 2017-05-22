@@ -94,7 +94,7 @@ public class TableModel extends AbstractTableModel implements ModelListener{
 	}
 
 	/**
-	 * Gets the value at a certain cell specified by a row and column as the arguments 
+	 * Gets the value at a certain cell specified by a row and column as the arguments
 	 */
 	@Override
 	public Object getValueAt(int arg0, int arg1) {
