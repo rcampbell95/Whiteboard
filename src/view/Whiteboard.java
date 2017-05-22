@@ -246,13 +246,18 @@ public class Whiteboard extends JFrame {
 		moveFrontButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				canvas.moveSelectedToFront();
+				if(canvas.hasSelected()) {
+					canvas.moveSelectedToFront();
+				}
 			}
 		});
 		moveBackButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				canvas.moveSelectedToBack();
+				if(canvas.hasSelected()) {
+					canvas.moveSelectedToBack();
+				}
+
 			}
 		});
 
@@ -476,6 +481,7 @@ public class Whiteboard extends JFrame {
 		public static final int FRONT = 2;
 		public static final int BACK = 3;
 		public static final int CHANGE = 4;
+		public static final int PRINT = 5;
 
 		public int command;
 		public DShapeModel model;
