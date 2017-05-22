@@ -7,11 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -26,7 +23,7 @@ import javax.swing.table.JTableHeader;
 public class Whiteboard extends JFrame {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -40,7 +37,8 @@ public class Whiteboard extends JFrame {
 	private TableModel tableModel;
 	private JTable table;
 	private JButton rectButton, ovalButton, lineButton, textButton,setColorButton, moveFrontButton,
-			moveBackButton, removeButton, saveImageButton, saveCanvasButton,openCanvasButton;
+			moveBackButton, removeButton, saveImageButton, saveCanvasButton,openCanvasButton,
+			startServerButton, startClientButton;
 	int UPPER_BOUND = 75;
 	int LOWER_BOUND = 25;
 	int CANVAS_SIZE = 400;
@@ -51,6 +49,9 @@ public class Whiteboard extends JFrame {
 	protected int y1, y2;
 	private ArrayList<ObjectOutputStream> outputs = new ArrayList<>();
 	private ArrayList<JComponent> disableG = new ArrayList<>();
+	private static final int NORMAL_MODE = 0;
+	private static final int SERVER_MODE = 1;
+	private static final int CLIENT_MODE = 2;
 
 	public Whiteboard() {
 		allControls = Box.createVerticalBox();
@@ -61,6 +62,7 @@ public class Whiteboard extends JFrame {
 		addTextBox();
 		addMoveBox();
 		addSaveBox();
+		addServerBox();
 		addTable();
 
 		alignControls();
@@ -73,7 +75,6 @@ public class Whiteboard extends JFrame {
 		//setResizable(false);
 		setLocationRelativeTo(null);
 		setVisible(true);
-
 
 
 	}
@@ -167,16 +168,6 @@ public class Whiteboard extends JFrame {
 		Box horizontalBox = Box.createHorizontalBox();
 
 		textField = new JFormattedTextField("Whiteboard!");
-		/*textField.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if(canvas.hasSelected() && canvas.getSelected() instanceof DText) {
-					canvas.getSelected().setText(textField.getText());
-					//modelChanged(canvas.getSelected().model);
-				}
-			}
-			
-		});*/
 		textField.setMaximumSize(new Dimension(300,40));
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -271,6 +262,33 @@ public class Whiteboard extends JFrame {
 
 		disableG.add(openCanvasButton);
 	}
+	public void addServerBox() {
+		Box horizontalBox = Box.createHorizontalBox();
+
+		startServerButton = new JButton("Start Server");
+		startClientButton = new JButton("Start Client");
+
+		startServerButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		startClientButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		horizontalBox.add(startServerButton);
+		horizontalBox.add(startClientButton);
+
+		allControls.add(horizontalBox);
+
+		disableG.add(startServerButton);
+		disableG.add(startClientButton);
+	}
 	private void saveImage() {
 		int retVal = fileChooser.showSaveDialog(this);
 		if(retVal == JFileChooser.APPROVE_OPTION) {
@@ -355,32 +373,37 @@ public class Whiteboard extends JFrame {
 		}
 		canvas.addShape(model);
 	}
-	
-	private class ClientHandler extends Thread {
-		private String name;
-		private int port;
-		
-		public ClientHandler(final String name, final int port) {
-			this.name = name;
-			this.port = port;
+
+
+	public static class Message {
+		public static final int ADD = 0;
+		public static final int REMOVE = 1;
+		public static final int FRONT = 2;
+		public static final int BACK = 3;
+		public static final int CHANGE = 4;
+
+		public int command;
+		public DShapeModel model;
+
+		public Message() {
+			command = -1;
+			model = null;
 		}
-		
-		public void runt() {
-			try {
-				Socket toServer = new Socket(name, port);
-				ObjectInputStream inStream = new ObjectInputStream(toServer.getInputStream());
-				
-				while(true) {
-					String xmlString = (String) in.readObject();
-					XMLDecoder modelDecoder = new XMLDecoder(new ByteArrayInputStream(xmlString.getBytes());
-					Message message = (Message) decoder.readObject();
-					
-					processMessage(message);
-				}
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
+		public Message(int command, DShapeModel message) {
+			this.command = command;
+			this.model = model;
+		}
+		public int getCommand() {
+			return command;
+		}
+		public void setCommand(int cmd) {
+			command = cmd;
+		}
+		public DShapeModel getModel() {
+			return model;
+		}
+		public void setModel(DShapeModel model) {
+			this.model = model;
 		}
 	}
 }

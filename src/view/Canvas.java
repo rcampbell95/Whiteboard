@@ -175,7 +175,11 @@ public class Canvas extends JPanel implements ModelListener
 		whiteboard.didMoveToBack(object);
 		repaintShape(object);
 	}
-
+	public void setTextForSelected(String text) {
+		if(selected instanceof DText) {
+			((DText)selected).setText(text);
+		}
+	}
 
 	public void addShape(DShapeModel model)
 	{

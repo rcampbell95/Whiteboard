@@ -36,11 +36,10 @@ public class DText extends DShape {
 		
 		// Get clip for drawing within the rectangle bounds
 		Shape clip = g2.getClip();
-		// Intersect the clip with the text shape bounds.
-		// i.e. we won't lay down any pixels that fall outside our                    
+
 		//bounds
 		g2.setClip(clip.getBounds().createIntersection(getBounds()));
-		// Restore the old clip
+		// Restoreï¿½theï¿½oldï¿½clip
 
 
 		g2.drawString(textModel.getText(),textModel.getBounds().x, yPosition);
