@@ -492,7 +492,7 @@ public class Whiteboard extends JFrame {
 		}
 		public Message(int command, DShapeModel message) {
 			this.command = command;
-			this.model = model;
+			this.model = message;
 		}
 		public int getCommand() {
 			return command;
@@ -591,6 +591,7 @@ public class Whiteboard extends JFrame {
  					Message message = (Message) modelDecoder.readObject();
  					
  					processMessage(message);
+ 					System.out.println(message.toString());
  				}
  			}
  			catch(Exception e) {
